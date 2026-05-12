@@ -1,0 +1,12 @@
+C:\Users\tokes\source\repos\KonyvarGUI\KonyvarGUI\bin\Debug\KonyvarGUI.exe.config
+C:\Users\tokes\source\repos\KonyvarGUI\KonyvarGUI\bin\Debug\KonyvarGUI.exe
+C:\Users\tokes\source\repos\KonyvarGUI\KonyvarGUI\bin\Debug\KonyvarGUI.pdb
+C:\Users\tokes\source\repos\KonyvarGUI\KonyvarGUI\obj\Debug\KonyvarGUI.csproj.AssemblyReference.cache
+C:\Users\tokes\source\repos\KonyvarGUI\KonyvarGUI\obj\Debug\KonyvarGUI.Form1.resources
+C:\Users\tokes\source\repos\KonyvarGUI\KonyvarGUI\obj\Debug\KonyvarGUI.Properties.Resources.resources
+C:\Users\tokes\source\repos\KonyvarGUI\KonyvarGUI\obj\Debug\KonyvarGUI.csproj.GenerateResource.cache
+C:\Users\tokes\source\repos\KonyvarGUI\KonyvarGUI\obj\Debug\KonyvarGUI.csproj.CoreCompileInputs.cache
+C:\Users\tokes\source\repos\KonyvarGUI\KonyvarGUI\obj\Debug\KonyvarGUI.exe
+C:\Users\tokes\source\repos\KonyvarGUI\KonyvarGUI\obj\Debug\KonyvarGUI.pdb
+C:\Users\tokes\source\repos\KonyvarGUI\KonyvarGUI\obj\Debug\KonyvarGUI.exe.config
+C:\Users\tokes\source\repos\KonyvarGUI\KonyvarGUI\obj\Debug\KonyvarGUI.Form2.resources
