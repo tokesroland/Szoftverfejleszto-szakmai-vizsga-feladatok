@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{47E2D2BC-15B4-4B4B-A76B-15FFB274CC3D}</ProjectGuid>
+    <ProjectGuid>{0105C41C-77D4-4068-8A61-AA2797807FB9}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>javitasNetrunner</RootNamespace>
-    <AssemblyName>javitasNetrunner</AssemblyName>
+    <RootNamespace>fleetapp</RootNamespace>
+    <AssemblyName>fleetapp</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -43,9 +43,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Implant.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Vehicles.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

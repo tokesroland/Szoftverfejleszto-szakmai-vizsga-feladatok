@@ -1,0 +1,10 @@
+C:\Users\Szonja\source\repos\fleetgui\fleetgui\bin\Debug\fleetgui.exe.config
+C:\Users\Szonja\source\repos\fleetgui\fleetgui\bin\Debug\fleetgui.exe
+C:\Users\Szonja\source\repos\fleetgui\fleetgui\bin\Debug\fleetgui.pdb
+C:\Users\Szonja\source\repos\fleetgui\fleetgui\obj\Debug\fleetgui.csproj.AssemblyReference.cache
+C:\Users\Szonja\source\repos\fleetgui\fleetgui\obj\Debug\fleetgui.Form1.resources
+C:\Users\Szonja\source\repos\fleetgui\fleetgui\obj\Debug\fleetgui.Properties.Resources.resources
+C:\Users\Szonja\source\repos\fleetgui\fleetgui\obj\Debug\fleetgui.csproj.GenerateResource.cache
+C:\Users\Szonja\source\repos\fleetgui\fleetgui\obj\Debug\fleetgui.csproj.CoreCompileInputs.cache
+C:\Users\Szonja\source\repos\fleetgui\fleetgui\obj\Debug\fleetgui.exe
+C:\Users\Szonja\source\repos\fleetgui\fleetgui\obj\Debug\fleetgui.pdb

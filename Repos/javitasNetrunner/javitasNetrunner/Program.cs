@@ -10,12 +10,15 @@ namespace javitasNetrunner
     {
         static void Main(string[] args)
         {
-            string hibasFilePath = "C:\\Users\\tokerola\\Desktop\\Új mappa\\implants_hibas.csv";
-            string JavitottPath = "C:\\Users\\tokerola\\Desktop\\Új mappa\\implants_javitott.csv";
-            List<Implant> lista = Implant.Beolvas(hibasFilePath);
-            Implant.FileCorrector(lista, JavitottPath);
-            Implant.ReadmeCreator("C:\\Users\\tokerola\\Desktop\\Új mappa\\Readme.txt", lista);
-            Implant.Kiiratas(lista);
+            string wrongCsvPath = "C:\\Users\\Szonja\\OneDrive\\Asztali gép\\csv\\implants_hibas.csv";
+            string FixedcsvPath = "C:\\Users\\Szonja\\OneDrive\\Asztali gép\\csv\\implants_javitott.csv";
+            string ReadMePath = "C:\\Users\\Szonja\\OneDrive\\Asztali gép\\csv\\readme.txt";
+
+            List<Implant> implantsList = Implant.Beolvasas(wrongCsvPath);
+            Implant.CreateReadMe(ReadMePath, implantsList);
+            Implant.FileFixer(wrongCsvPath, FixedcsvPath);
+
+            Implant.ConsoleKiiratas();
         }
     }
 }

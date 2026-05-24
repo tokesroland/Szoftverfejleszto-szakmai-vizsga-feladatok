@@ -1,8 +1,7 @@
-C:\Users\tokerola\source\repos\javitasNetrunner\javitasNetrunner\bin\Debug\javitasNetrunner.exe.config
-C:\Users\tokerola\source\repos\javitasNetrunner\javitasNetrunner\bin\Debug\javitasNetrunner.exe
-C:\Users\tokerola\source\repos\javitasNetrunner\javitasNetrunner\bin\Debug\javitasNetrunner.pdb
-C:\Users\tokerola\source\repos\javitasNetrunner\javitasNetrunner\obj\Debug\javitasNetrunner.csproj.AssemblyReference.cache
-C:\Users\tokerola\source\repos\javitasNetrunner\javitasNetrunner\obj\Debug\javitasNetrunner.csproj.CoreCompileInputs.cache
-C:\Users\tokerola\source\repos\javitasNetrunner\javitasNetrunner\obj\Debug\javitasNetrunner.exe
-C:\Users\tokerola\source\repos\javitasNetrunner\javitasNetrunner\obj\Debug\javitasNetrunner.pdb
-C:\Users\tokerola\source\repos\javitasNetrunner\javitasNetrunner\obj\Debug\javitasNetrunner.exe.config
+C:\Users\Szonja\source\repos\javitasNetrunner\javitasNetrunner\bin\Debug\javitasNetrunner.exe.config
+C:\Users\Szonja\source\repos\javitasNetrunner\javitasNetrunner\bin\Debug\javitasNetrunner.exe
+C:\Users\Szonja\source\repos\javitasNetrunner\javitasNetrunner\bin\Debug\javitasNetrunner.pdb
+C:\Users\Szonja\source\repos\javitasNetrunner\javitasNetrunner\obj\Debug\javitasNetrunner.csproj.AssemblyReference.cache
+C:\Users\Szonja\source\repos\javitasNetrunner\javitasNetrunner\obj\Debug\javitasNetrunner.csproj.CoreCompileInputs.cache
+C:\Users\Szonja\source\repos\javitasNetrunner\javitasNetrunner\obj\Debug\javitasNetrunner.exe
+C:\Users\Szonja\source\repos\javitasNetrunner\javitasNetrunner\obj\Debug\javitasNetrunner.pdb

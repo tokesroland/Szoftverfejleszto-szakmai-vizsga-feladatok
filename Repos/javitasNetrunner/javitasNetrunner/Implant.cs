@@ -1,140 +1,154 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
-using System;
+using System.Linq;
 
 namespace javitasNetrunner
 {
-    class Implant
+    internal class Implant
     {
-        static char hibas_karakter;
-        static bool readme_file_isdone = false;
-        static bool repaired_file_is_done = false;
+        static int dangerousImplantCount = 0;
+        static int hardwareProfileCount = 0;
+        static char wrongChar;
+        static bool ReadmeReady = false;
+        static bool FileFixReady = false;
 
         public Implant(string sor)
         {
-            string javitott = sor.Replace(';', '|');
-            string[] data = javitott.Split(hibas_karakter);
+            string javitottSor = sor.Replace(';', '|');
+            string[] data = javitottSor.Split('|');
 
-            Id = int.Parse(data[0]);
-            Name = data[1];
-            Slot = data[2];
-            Ram_usage = int.Parse(data[3]);
-            Danger_level = int.Parse(data[4]);
+            ID = int.Parse(data[0]);
+            name = data[1];
+            slot = data[2];
+            ram_usage = int.Parse(data[3]);
+            danger_level = int.Parse(data[4]);
         }
 
-        public static List<Implant> Beolvas(string filePath)
+        public static List<Implant> Beolvasas(string filePath)
         {
             List<Implant> list = new List<Implant>();
-            string[] adat = File.ReadAllLines(filePath);
+            string[] data = File.ReadAllLines(filePath);
+            wrongChar = data[1][1];
 
-            string a = adat[0];
-            hibas_karakter = a[2];
-
-            for (int i = 1; i < adat.Length; i++)
+            for(int i = 1; i < data.Length; i++)
             {
-                list.Add(new Implant(adat[i]));
+                list.Add(new Implant(data[i]));
+                hardwareProfileCount++;
             }
-
             return list;
         }
 
-        public static void ReadmeCreator(string path, List<Implant> list)
+        public static void CreateReadMe(string filePath, List<Implant> list)
         {
-            List<string> lista = new List<string>();
-            int dangerCnt = 0;
+            string[] sorok = new string[5];
+            List<string> slotok = new List<string>();
 
-            foreach (Implant item in list) 
+            foreach(Implant im in list)
             {
-                if (!lista.Contains(item.Slot))
+                if (!slotok.Contains(im.slot))
                 {
-                    lista.Add(item.Slot);
+                    slotok.Add(im.slot);
                 }
-
-                if(item.Danger_level > 80)
+                if(im.danger_level > 80)
                 {
-                    dangerCnt++;
+                    dangerousImplantCount++;
                 }
-                
             }
-            string SlotCnt = lista.Count.ToString();
-            string SerultKarakter = hibas_karakter.ToString();
-            string dangerStr = dangerCnt.ToString();
+            int slotCount = slotok.Count;
 
-            string[] toFile = new string[5];
-            toFile[0] = "CYBERWARE ADATELEMZÉSI JELENTÉS\n";
-            toFile[1] = "-------------------------------\n";
-            toFile[2] = $"Aktív hálózati slotok száma: {SlotCnt}\n";
-            toFile[3] = $"Sérült elválasztó karakter: {SerultKarakter}\n";
-            toFile[4] = $"Kiemelten veszélyes modulok(danger > 80): {dangerStr} db\n";
+            sorok[0] = "CYBERWARE ADATELEMZÉSI JELENTÉS";
+            sorok[1] = "-------------------------------";
+            sorok[2] = $"Aktív hálózati slotok száma: {slotCount}";
+            sorok[3] = $"Sérült elválasztó karakter: pipe ({wrongChar})";
+            sorok[4] = $"Kiemelten veszélyes modulok (danger > 80): {dangerousImplantCount} db";
+            try
+            {
+                File.WriteAllLines(filePath, sorok);
+
+                if (File.Exists(filePath))
+                {
+                    ReadmeReady = true;
+                }
+            } catch (IOException ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+        }
+
+        public static void FileFixer(string path, string fixedPath)
+        {
+            string[] adatok = File.ReadAllLines(path);
+            string[] NewData = new string[adatok.Length];
+
+            for (int i = 0; i < adatok.Length; i++) 
+            {
+                NewData[i] = adatok[i].Replace('|', ';');
+            }
 
             try
             {
-                File.WriteAllLines(path, toFile);
-                readme_file_isdone = true;
+                File.WriteAllLines(path, NewData);
+                if (File.Exists(path))
+                {
+                    FileFixReady = true;
+                }
+
             }
             catch (IOException ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+        }
+
+        public static void ConsoleKiiratas()
+        {
+            try
+            {
+                Console.WriteLine(
+                    "[=] === NEONCITY CYBERWARE RECOVERY SYSTEM === [=]\n" +
+                    "Időbélyeg: 2076-05-20\n" +
+                    "Sérült szektorok beolvasása...\n" +
+                    $"Sikeresen dekódolva: {hardwareProfileCount} hardver-profil.\n" +
+                    $"\nAdatstruktóra javítása..."
+                );
+                if (FileFixReady)
+                {
+                    Console.WriteLine($"[FIXED] Hibás elválasztó karakter ({wrongChar}) sikeresen javítva pontosvesszőre (;).\n\n");
+                }
+                else
+                {
+                    Console.WriteLine("[ERROR] a hibás karakter nem lett javítva!");
+                }
+
+                Console.WriteLine("Archiválás folyamatban:");
+
+                if (FileFixReady) 
+                {
+                    Console.WriteLine("-> Mentve: Readme.txt (Statisztikai jelentés)\n");
+                } else Console.WriteLine("-> Readme.txt mentési hiba");
+
+                if (ReadmeReady) 
+                {
+                    Console.WriteLine("-> Mentve: implants_javitott.csv (Tiszta adatfolyam)\n");
+                } else Console.WriteLine("-> csv mentési hiba");
+
+                if (ReadmeReady && FileFixReady) 
+                {
+                    Console.WriteLine("Rendszer üzenet: A dekódolás sikeresen lefutott. Ready.");
+                }
+
+            } catch (IOException ex)
             {
                 Console.WriteLine(ex.ToString());
             }
 
         }
 
-        public static void FileCorrector(List<Implant> list, string filePath)
-        {
-            File.WriteAllText(filePath, "id;name;slot;ram_usage;danger_level\n");
-            foreach(Implant item in list)
-            {
-                try
-                {
-                    File.AppendAllText(filePath, $"{item.Id};{item.Name};{item.Slot};{item.Ram_usage};{item.Danger_level}\n");
-                    repaired_file_is_done = true;
-                }
-                catch (IOException ex) 
-                {
-                    Console.WriteLine(ex.ToString());
-                }
-            }
-        }
-
-        public static void Kiiratas(List<Implant> lista)
-        {
-            Console.WriteLine(
-                "[=] === NEONCITY CYBERWARE RECOVERY SYSTEM === [=]\r\n" +
-                "Időbélyeg: 2076-05-20\r\n" +
-                "Sérült szektorok beolvasása...\r\n" +
-                $"Sikeresen dekódolva: {lista.Count} hardver-profil.\n\n"
-                
-                + "Adatstruktúra javítása...\r\n" +
-                $"[FIXED] Hibás elválasztó karakter ({hibas_karakter}) sikeresen javítva pontosvesszőre (;)."
-             );
-
-            Console.WriteLine("Archiválás folyamatban...");
-            if (readme_file_isdone)
-            {
-                Console.WriteLine("-> Mentve: Readme.txt (Statisztikai jelentés)");
-            }
-            else
-            {
-                Console.WriteLine("Nem sikerült a mentés!");
-            }
-
-            if (repaired_file_is_done)
-            {
-                Console.WriteLine("-> Mentve: implants_javitott.csv (Tiszta adatfolyam)");
-            }
-            else
-            {
-                Console.WriteLine("Nem sikerült a mentés!");
-            }
-
-            Console.WriteLine("Rendszer üzenet: A dekódolás sikeresen lefutott. Ready.");
-
-        }
-
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public string Slot { get; set; }
-        public int Ram_usage { get; set; }
-        public int Danger_level { get; set; }
+        public int ID { get; set; }
+        public string name { get; set; }
+        public string slot { get; set; }
+        public int ram_usage { get; set; }
+        public int danger_level { get; set; }
     }
 }

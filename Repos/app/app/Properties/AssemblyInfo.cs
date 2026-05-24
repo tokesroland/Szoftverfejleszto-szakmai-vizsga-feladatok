@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("javitasNetrunner")]
+[assembly: AssemblyTitle("app")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("javitasNetrunner")]
+[assembly: AssemblyProduct("app")]
 [assembly: AssemblyCopyright("Copyright ©  2026")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("47e2d2bc-15b4-4b4b-a76b-15ffb274cc3d")]
+[assembly: Guid("42a62b62-6bed-4cc1-ae1c-c4e089f33efb")]
 
 // Version information for an assembly consists of the following four values:
 //

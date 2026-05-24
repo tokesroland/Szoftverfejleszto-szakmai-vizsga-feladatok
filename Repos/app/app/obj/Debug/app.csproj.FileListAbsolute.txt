@@ -1,0 +1,10 @@
+C:\Users\Szonja\source\repos\app\app\bin\Debug\app.exe.config
+C:\Users\Szonja\source\repos\app\app\bin\Debug\app.exe
+C:\Users\Szonja\source\repos\app\app\bin\Debug\app.pdb
+C:\Users\Szonja\source\repos\app\app\obj\Debug\app.csproj.AssemblyReference.cache
+C:\Users\Szonja\source\repos\app\app\obj\Debug\app.Form1.resources
+C:\Users\Szonja\source\repos\app\app\obj\Debug\app.Properties.Resources.resources
+C:\Users\Szonja\source\repos\app\app\obj\Debug\app.csproj.GenerateResource.cache
+C:\Users\Szonja\source\repos\app\app\obj\Debug\app.csproj.CoreCompileInputs.cache
+C:\Users\Szonja\source\repos\app\app\obj\Debug\app.exe
+C:\Users\Szonja\source\repos\app\app\obj\Debug\app.pdb
