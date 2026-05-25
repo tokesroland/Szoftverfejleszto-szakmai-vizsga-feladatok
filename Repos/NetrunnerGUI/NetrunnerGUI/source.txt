@@ -1,0 +1,3 @@
+1;Sandevistan MK4;Cortex;16;85
+2;Mantis Blades;Arms;8;75
+3;Mánki;Arms;6;45
