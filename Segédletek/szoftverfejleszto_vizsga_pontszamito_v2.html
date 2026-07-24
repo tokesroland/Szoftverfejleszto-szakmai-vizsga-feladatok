@@ -1,0 +1,116 @@
+<div style="display: flex; flex-direction: column; gap: 2rem; padding: 1rem 0;">
+  <div>
+    <h2 style="margin: 0 0 1.5rem 0; font-size: 18px; font-weight: 500; color: var(--color-text-primary);">Szoftverfejlesztő és -tesztelő technikus vizsga</h2>
+    
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 2rem;">
+      <div style="background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 1rem;">
+        <label style="display: block; font-size: 13px; color: var(--color-text-secondary); margin-bottom: 0.5rem; font-weight: 500;">Interaktív vizsga (pont)</label>
+        <input type="number" id="interaktiv" min="0" max="40" value="32" style="width: 100%; margin-bottom: 0.5rem;" />
+        <span style="font-size: 12px; color: var(--color-text-tertiary);">Maximum: 40 pont</span>
+      </div>
+      
+      <div style="background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 1rem;">
+        <label style="display: block; font-size: 13px; color: var(--color-text-secondary); margin-bottom: 0.5rem; font-weight: 500;">240 perces feladatsor (pont)</label>
+        <input type="number" id="feladatsor" min="0" max="65" value="52" style="width: 100%; margin-bottom: 0.5rem;" />
+        <span style="font-size: 12px; color: var(--color-text-tertiary);">Maximum: 65 pont</span>
+      </div>
+      
+      <div style="background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 1rem;">
+        <label style="display: block; font-size: 13px; color: var(--color-text-secondary); margin-bottom: 0.5rem; font-weight: 500;">Projektmunka szóbeli (pont)</label>
+        <input type="number" id="projektszozbeli" min="0" max="55" value="44" style="width: 100%; margin-bottom: 0.5rem;" />
+        <span style="font-size: 12px; color: var(--color-text-tertiary);">Maximum: 55 pont</span>
+      </div>
+      
+      <div style="background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 1rem;">
+        <label style="display: block; font-size: 13px; color: var(--color-text-secondary); margin-bottom: 0.5rem; font-weight: 500;">Ágazati alapvizsga (%)</label>
+        <input type="number" id="agazati" min="0" max="100" value="75" style="width: 100%; margin-bottom: 0.5rem;" />
+        <span style="font-size: 12px; color: var(--color-text-tertiary);">Súlyozás: 10%</span>
+      </div>
+    </div>
+  </div>
+
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+    <div style="background: var(--color-background-secondary); border-radius: var(--border-radius-lg); border: 0.5px solid var(--color-border-tertiary); padding: 1.25rem;">
+      <p style="margin: 0 0 0.75rem 0; font-size: 13px; color: var(--color-text-secondary);">Vizsgarészek átlaga</p>
+      <p style="margin: 0; font-size: 28px; font-weight: 500; color: var(--color-text-primary);" id="vszatlaga">83.3%</p>
+      <p style="margin: 0.5rem 0 0 0; font-size: 12px; color: var(--color-text-tertiary);">160 pont összesen</p>
+    </div>
+
+    <div style="background: var(--color-background-secondary); border-radius: var(--border-radius-lg); border: 0.5px solid var(--color-border-tertiary); padding: 1.25rem;">
+      <p style="margin: 0 0 0.75rem 0; font-size: 13px; color: var(--color-text-secondary);">Végeredmény (10% súlyozás)</p>
+      <p style="margin: 0; font-size: 28px; font-weight: 500; color: var(--color-text-primary);" id="vegeredmeny">82.5%</p>
+      <p style="margin: 0.5rem 0 0 0; font-size: 12px; color: var(--color-text-tertiary);" id="statusz">✓ Sikeres (40% felett)</p>
+    </div>
+  </div>
+
+  <div style="background: var(--color-background-secondary); border-radius: var(--border-radius-lg); border: 0.5px solid var(--color-border-tertiary); padding: 1.25rem;">
+    <h3 style="margin: 0 0 1rem 0; font-size: 16px; font-weight: 500;">Részletezés</h3>
+    
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+      <div>
+        <p style="margin: 0 0 0.5rem 0; font-size: 12px; color: var(--color-text-secondary);">Interaktív vizsga</p>
+        <p style="margin: 0; font-size: 16px; font-weight: 500;" id="interaktiv-szazalek">80%</p>
+      </div>
+      <div>
+        <p style="margin: 0 0 0.5rem 0; font-size: 12px; color: var(--color-text-secondary);">240 perces feladatsor</p>
+        <p style="margin: 0; font-size: 16px; font-weight: 500;" id="feladatsor-szazalek">80%</p>
+      </div>
+      <div>
+        <p style="margin: 0 0 0.5rem 0; font-size: 12px; color: var(--color-text-secondary);">Projektmunka szóbeli</p>
+        <p style="margin: 0; font-size: 16px; font-weight: 500;" id="projekt-szazalek">80%</p>
+      </div>
+      <div>
+        <p style="margin: 0 0 0.5rem 0; font-size: 12px; color: var(--color-text-secondary);">Ágazati alapvizsga</p>
+        <p style="margin: 0; font-size: 16px; font-weight: 500;" id="agazati-szazalek">75%</p>
+      </div>
+    </div>
+
+    <div style="background: var(--color-background-primary); border-radius: var(--border-radius-md); border: 0.5px solid var(--color-border-tertiary); padding: 1rem; margin-top: 1rem;">
+      <p style="margin: 0 0 0.5rem 0; font-size: 12px; font-weight: 500; color: var(--color-text-secondary);">Számítás képlete:</p>
+      <p style="margin: 0; font-size: 12px; color: var(--color-text-tertiary); font-family: var(--font-mono);">(V% + F% + P%) ÷ 3 × 90% + Á% × 10%</p>
+    </div>
+  </div>
+</div>
+
+<script>
+function updateCalc() {
+  const interaktiv = parseFloat(document.getElementById('interaktiv').value) || 0;
+  const feladatsor = parseFloat(document.getElementById('feladatsor').value) || 0;
+  const projektszozbeli = parseFloat(document.getElementById('projektszozbeli').value) || 0;
+  const agazati = parseFloat(document.getElementById('agazati').value) || 0;
+
+  // Százalékok
+  const interaktiv_szazalek = Math.round((interaktiv / 40) * 100);
+  const feladatsor_szazalek = Math.round((feladatsor / 65) * 100);
+  const projekt_szazalek = Math.round((projektszozbeli / 55) * 100);
+
+  // Vizsgarészek átlaga
+  const vszatlaga = (interaktiv_szazalek + feladatsor_szazalek + projekt_szazalek) / 3;
+  
+  // Végeredmény (90% vizsga + 10% ágazati)
+  const vegeredmeny = (vszatlaga * 0.9) + (agazati * 0.1);
+
+  document.getElementById('interaktiv-szazalek').textContent = interaktiv_szazalek + '%';
+  document.getElementById('feladatsor-szazalek').textContent = feladatsor_szazalek + '%';
+  document.getElementById('projekt-szazalek').textContent = projekt_szazalek + '%';
+  document.getElementById('agazati-szazalek').textContent = Math.round(agazati) + '%';
+
+  document.getElementById('vszatlaga').textContent = Math.round(vszatlaga * 10) / 10 + '%';
+  document.getElementById('vegeredmeny').textContent = Math.round(vegeredmeny * 10) / 10 + '%';
+
+  // Státusz
+  const statusz = document.getElementById('statusz');
+  if (vegeredmeny >= 40) {
+    statusz.innerHTML = '<span style="color: var(--color-text-success);">✓ Sikeres (40% felett)</span>';
+  } else {
+    statusz.innerHTML = '<span style="color: var(--color-text-danger);">✗ Sikertelen (40% alatt)</span>';
+  }
+}
+
+document.getElementById('interaktiv').addEventListener('input', updateCalc);
+document.getElementById('feladatsor').addEventListener('input', updateCalc);
+document.getElementById('projektszozbeli').addEventListener('input', updateCalc);
+document.getElementById('agazati').addEventListener('input', updateCalc);
+
+updateCalc();
+</script>

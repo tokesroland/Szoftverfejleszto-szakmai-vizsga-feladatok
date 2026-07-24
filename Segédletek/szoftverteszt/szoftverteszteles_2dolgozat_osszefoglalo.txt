@@ -1,0 +1,383 @@
+﻿
+Fejlesztés és tesztelés kapcsolata:
+A tesztelés nem választható szét a fejlesztéstől
+Ritkán van teljesen különálló “fejlesztés” és “tesztelés” projekt
+Gyakran teljesen egybeolvad, pl. egységtesztelés, teszt-alapú
+fejlesztés, hibakeresés
+A tesztelés mindig alkalmazkodik a választott szoftverfejlesztési életciklusmodelhez.
+
+Szoftverfejlesztési életciklusmodellek:
+A szoftverek fejlesztésének lépéseit írják le
+Sok különböző fajtája van:
+1. szekvenciális fejlesztési modellek
+- vízesés modell, V-modell, W-modell
+2. iteratív és inkrementális fejlesztési modellek
+- hagyományos: prototípus fejlesztés, RAD (Rapid Application Development), spirális modell, UP (Unified Process), RUP (Rational Unified Process)
+- agilis: Scrum, Kanban, XP (extrém programozás), Lean IT
+
+1. szekvenciális/lineáris modellek:
+A fejlesztés egy lineáris, egymást követő lépések sorozata, ahol minden fázisnak be kell fejeződnie, mielőtt a következő kezdődhetne, és nehézkes visszatérni korábbi fázisokra.
+Előnyei: Egyszerű, jól strukturált, könnyen kezelhető kis projekteknél, ahol a követelmények nem változnak.
+Hátrányai: Rugalmatlan, mert ha a fejlesztés során változnak a követelmények, nehéz visszalépni a korábbi fázisokhoz.
+
+2. iteratív modellek:
+A fejlesztés során ugyanazok a fázisok ismétlődnek, de minden iteráció során a rendszer egészén javítások és fejlesztések történnek. Az egyes iterációk végén egy frissített verzió jön létre, és az újabb verziók mindig jobban közelítenek a végleges rendszerhez.
+Előnyei: Rugalmasabb, lehetővé teszi a hibák korai felismerését és kijavítását, valamint jobban kezelhetőek a változó követelmények.
+Hátrányai: A projekt során szükség van folyamatos felülvizsgálatokra, és előfordulhat, hogy az iterációk költségesek és időigényesek. Nagyobb igény a kommunikációra, változtatások dokumntálásának hiánya, nehzebb tesztelni.
+
+3. inkrementális modellek:
+A fejlesztés több kisebb inkremensre van felosztva. Minden inkremens egy működőképes részrendszert eredményez, ami folyamatosan bővül. A teljes rendszer fokozatosan épül fel ezekből az inkremensekből. A követelményeket nem szükséges az elején rögzíteni, hanem az egyes inkremensek egyre jobban finomítják, részletezik, és kiegészítik.
+Előnyei: Fokozatosan látható eredmények, az ügyfelek hamarabb kapnak működőképes termékrészt, jól kezelhető változó követelmények esetén.
+Hátrányai: Az inkremensek összeállítása kihívást jelenthet, és az inkremensek tervezése, priorizálása körültekintést igényel.
+
+Vízesés modell:
+A fejlesztés lineáris, egymást követő lépésekben történik, ahol minden fázist be kell fejezni, mielőtt a következőre lépnénk, és nem lehetséges visszalépni a korábbi fázisokra.
+Lépések:
+1. Követelmények
+2. Tervezés
+3. Fejlesztés
+4. Tesztelés
+5. Üzembe helyezés
+6. Karbantartás
+-> a tesztelés nem a folyamat egészében zajlik a fejlesztéssel párhuzamosan!
+
+Egy jó modellben a teljes folyamat alatt figyelni kell a minőségre:
+- minden fázis után ellenőrzés
+- akkor léphetünk tovább, ha az előző eredménye rendben van
+- ha nincs rendben, a fázist meg kell ismételnünk
+
+V-modell:
+A Vízesés-modell továbbfejlesztett változata, ahol a fejlesztés és a tesztelés párhuzamosan halad. 
+V-modell költségesebb és komplexebb, de egy fokkal rugalmasabb és megengedőbb a visszalépés tekintetében, valamint jobban biztosítja a hibák feltárását és a szoftver sikerét.
+Minden fejlesztési fázishoz tartozik egy tesztelési fázis, és ezek egy "V" alakot képeznek. 
+A bal oldalon a fejlesztési fázisok, a jobb oldalon a tesztelési fázisok helyezkednek el.
+1. Kódolás: a szoftver fejlesztése folyamatosan zajlik
+Verifikációs lépések:
+1. Követelménygyűjtés: felhasználói követelmények dokumentációja (funkcionális, interfész, teljesítmény, adat, biztonság), elfogadási tesztek tervezése
+2. Rendszerelemzés: szoftver specifikációs dokumentum (fejlesztési terv, általános rendszer felépítés, menüszerkezetek, adatszerkezetek, üzleti forgatókönyv, mintafelületek, egyed-kapcsolat diagramok), rendszertesztek tervezése
+3. Architektúratervezés: szoftver architekturális dokumentum (modulok listája, modulok rövid funkcionalitása, interfészkapcsolatok, függőségek, adatbázis-táblázatok, architekturális diagramok, technológiai részletek), integrációs tesztek tervezése
+4. Modultervezés: egységek/modulok alacsony szintű részletes kifejtése, fukncionális logika pszeudokódban kifejtve (adatbázistáblák, interfészek, API-hívások, függőségek, kivételek, bemenetek, kimenetek), egységtesztek tervezése
+Validációs lépések:
+1. Egységtesztelés
+2. Integrációs tesztelés
+3. Rendszertesztelés
+4. Elfogadási tesztelés
+
+Prototípus modell:
+A fejlesztés során egy kezdeti, részleges, nem teljesen működőképes verzió (prototípus) készül, amelyet a felhasználók visszajelzései alapján gyors, rövid iterációkban folyamatosan javítanak és bővítenek. 
+A végleges termék ennek a többszöri finomításnak az eredménye.
+A prototípus célja a végleges rendszer alapvető funkcióinak bemutatása, és a bizonytalan követelmények tisztázása.
+Lehet egy statikus, vizuális modell (pl drótváz vagy képernyőterv), vagy egy interaktív, korlátozott funkcionalitással rendelkező szoftver is.
+Lépései:
+1. Követelmények meghatározása
+Iterációs lépések:
+2. Tervezés/Design
+3. Prototípus készítése
+4. Ügyfél értesítése -> megvizsgálják és visszajelzést adnak a lehetséges bővítésekről vagy változásokról
+5. Felülvizsgálat és frissítés
+Ha az ügyfél elégedetlen bemutatáskor: 
+- új iteráció kezdése, vissza a tervezéshez
+Ha az ügyfél elégedett bemutatáskor:
+6. Fejlesztés
+7. Tesztelés
+8. Karbantartás
+Mikor hasznos:
+- Bizonytalan követelmények esetén: Ha a végleges rendszer követelményei nem világosak, a prototípus modell segíthet a felhasználók igényeinek és elvárásainak megértésében.
+- Felhasználói interakciós rendszerek: Az olyan rendszerek fejlesztésében, ahol a felhasználói felület, az élmény és az interakciók fontosak, lehetővé teszi, hogy a felhasználók jóval hamarabb ténylegesen kipróbálhassák a rendszert.
+- Kisebb projektek esetén a nagy mértkű rugalmassága nem okoz problémát.
+
+Gyors Alkalmazásfejlesztés = RAD (Rapid Application Development):
+Szintén rövid ciklusokban, prototípusokkal dolgozik, valamint a felhasználók iterációnkénti visszajelzései alapján változtat és bővít, viszont folyamatosan egy működőképes szoftververziót fejleszt, és célja a szoftver minél gyorsabb előállítása és leszállítása a megrendelőnek.
+Gyorsaság elősegítése:
+Moduláris fejlesztés: az alkalmazást különálló modulokból építik fel, amelyek egyenként kerülnek fejlesztésre és átadásra, lehetővé téve a fokozatos bevezetést és a párhuazmos fejlesztést is.
+Prototípus modellel ellentétben egy fokkal nagyobb, komplexebb projekteknél is működőképes tud lenni, de túl nagyoknál ez sem.
+CASE eszközök (Computer-Aided Software Engineering): olyan szoftverek, amelyek automatizálják a szoftverfejlesztés különböző szakaszait, pl. tervezés, kódolás, dokumentálás, tesztelés, karbantartás
+Lépései:
+1. Követelmények tervezése
+2. Felhasználói tervezés/Design
+- prototípus készítése, tesztelése, felülvizsgálata és frissítése iteratív módon
+3. Építés = gyors fejlesztés -> tényleges szoftver fejlesztése a prototípus alapján
+4. Átváltás = felhasználói tesztelés -> teljes rendszer végleges tesztelése, finomhangolása és élesítése
+
+Spirális modell:
+Kockázatkezelésre fókuszáló modell, minden iterációban a kockázatok elemzése és minimalizálása a cél, és ennek mentén a fejlesztés egyre pontosabban és részletesebben halad előre.
+A spirál minden fordulata egy újabb iterációt jelöl, a spirál középpontjától való távolság a projekt előrehaladását és a kockázatok csökkenését jelképezi.
+Lépései:
+1. Tervezés/Célkitűzés meghatározása: A projekt céljai, követelményei, célközönsége és kockázatok azonosítása.
+2. Kockázatelemzés: A potenciális kockázatok azonosítása és kezelési stratégiák kidolgozása.
+3. Fejlesztés és tesztelés: Prototípusok készítése, fejlesztési iterációk végrehajtása.
+4. Értékelés és tervezés a következő iterációhoz: A felhasználók visszajelzése alapján az újabb iterációk megtervezése
+
+RUP = Rational Unified Process:
+Nagyobb, összetettebb rendszerek hatékonyságnöveléséről fókuszáló modell.
+Részletes tervezés és modellezés már a korai szakaszokban
+Szigorúan szabályozott és szabványosított, jól strukturált iterációk, mérföldkövekkel a végükön
+Nagy hangsúlyt fektet az architektúrára, kockázatkezelésre és dokumentációra
+4 nagy fázis:
+1. Előkészítési fázis (Inception): A projekt fő céljainak, kockázatainak, követelményeinek meghatározása.
+2. Kidolgozási fázis (Elaboration): A követelmények pontosítása és a szoftver architektúrájának lefektetése.
+3. Megvalosítási fázis (Construction): A termék tényleges fejlesztése és folyamatos tesztelése iterációkon keresztül.
+4. Átadási fázis (Transition): A végső termék leszállítása és éles környezetbe helyezése
+Minden fázis alatt több iteráció is végbemegy
+Ábrákon azt jelezzük, hogy az egyes fázistevékenységek mely fázisokban vannak fókuszban.
+Fáizstevékenységek pl.: üzleti modellezés, követelmények elemzése, tervezés, implementáció, tesztelés, üzembehelyezés, konfiguráció, projekt management, környezet
+
+Agilis modell alapelvei:
+1. Az ügyfél elégedettsége: az ügyfélközpontúság a legfontosabb cél, folyamatosan figyelembe veszi az ügyfél igényeit, és a visszajelzései szerint módosítja a szoftvert
+2. Üdvözlendő változtatások: a visszajelzések beépítéséhez a rugalmasság elengedhetetlen, ezért a projekt során bármikor lehetőséget biztosít a változtatásra, akár a késői fázisokban is
+3. Folyamatos szállítás: működőképes szoftver rendszeres szállítása rövid, fix időtartamú (1-4 hetes) ciklusokban = sprintekben, a sprintek iterációk és inkremensek is egyben -> új szoftververzió + új funkciók/fejlesztések
+4. Szoros együttműködés: a fejlesztők napi megbeszéléseken (pl. stand-up meeting) vesznek részt, hogy a folyamatos változtatásokkal naprakészek maradjanak
+5. Motivált csapat: motivált, önszerveződő, kis csapatok dolgoznak megosztott felelősséggel
+6. Személyes kommunikáció: szemtől-szembeni kommunikációval a lehető legmagasabb szintű, ezzel a leggördülékenyebb naprakésznek maradni
+7. Működő szoftver: a fejlesztési folyamat előrehaladásának legfontosabb mérőeszköze a működő szoftver
+8. Fenntartható fejlesztés: az agilis fejlesztési folyamat állandó tempó fenntartását kívánja meg minden résztvevőtől
+9. Technikai kiválóság: a nem funkcionális követelmények, pl. a teljesítmény, biztonság, megbízhatóság és költséghatékonyság technikai megtervezése és optimalizálása növeli az agilitást
+10. Egyszerűség: a nem elvégzendő munka maximalizásának alapvető irányelvnek kell lennie
+11. Önszerveződő csapatok: a csapat egésze, önállóan dönt, hogyan fog együtt dolgozni, ki vállalja a felelősséget a különböző folyamatokért, és hogyan végzik el a munkát közösen
+12. Reflexió: rendszeres reviewra szükség van, minden sprint végén az eddigi munka kiértékelése, és szükséges javítások megfogalmazása a következő sprintre
+
+Scrum:
+Általános keretrendszer, amit az agilis szoftverfejlesztésben használnak a leggyakrabban. A legtöbb agilis modell alapvető struktúráját ez adja.
+Fő elemei:
+Sprint: Rövid, 2-4 hetes ciklusokban = sprintekben működik. Minden sprint végén egy működőképes szoftverrészlet kerül szállításra.
+Product Backlog: Ez az a lista, amely tartalmazza a projekt összes követelményét. A lista folyamatosan frissül az ügyfél igényei alapján, és a sprintre kerülő feladatokat ebből a listából választják ki.
+Sprint Planning: A sprint elején a csapat kiválasztja azokat a feladatokat a backlogból, amelyeket a sprint során megvalósítanak.
+Daily Stand-up: A csapat minden nap rövid megbeszélést tart, ahol mindenki elmondja, hogy: 1. min dolgozott, 2. milyen akadályokba ütközött, 3. mit fog aznap elvégezni.
+Sprint Review: A sprint végén a csapat bemutatja a sprint alatt elkészült funkciókat, és visszajelzést kér az érintettektől.
+Sprint Retrospective: Visszatekintő megbeszélés, a csapat értékeli a sprintet és felveti, hogyan lehetne javítani a fejlesztési folyamatot a következő iterációra -> Mi működött jól? Mi nem működött? Mit tanultunk? Mit tehetünk másképp a jövőben?
+Szerepkörök:
+Product Owner: Az ügyfél képviselője, aki felelős a backlog kezeléséért és a prioritások meghatározásáért.
+Scrum Master: A Scrum folyamat felügyelője, aki támogatja a csapatot a hatékony munkavégzésben, biztosítja a szabályok betartását, és segít eltávolítani az esetleges akadályokat.
+Fejlesztőcsapat: A szoftverfejlesztésért felelős tagok, akik közösen dolgoznak a feladatok elvégzésén.
+
+Extrém programozás (XP):
+Agilis módszertan, amelynek célja, hogy a lehető leggyorsabban reagáljon az ügyfél igényeire, ugyanakkor biztosítsa a fejlesztett szoftver magas minőségét -> gyors, folyamatos visszajelzések és közben magas minőség fenntartása
+Fő elemei:
+Páros programozás: Két fejlesztő dolgozik egy kódon egyszerre, egy gépen. Az egyikük kódol, míg a másik figyeli és javaslatokat tesz. A fejlesztők akár óránként cserélhetnek szerepet vagy párt is. 
+Tesztvezérelt fejlesztés (TDD): A fejlesztők először megírják az automatikus teszteket, és csak ezután írják meg a kódot, hogy a teszteket teljesítse, így a tesztek biztosan lefedik az összes utána megírt funkciót.
+Kis kiadások: Akár naponta vagy hetente új kiadásnak köszönhetően a csapat folyamatos visszajelzésekkel támogatást kap az ügyféltől, aki így közvetlenül részt vesz a fejlesztési folyamatban
+Folyamatos integráció: A fejlesztők akár napi többször integrálják az új kódot a meglévő rendszerbe, és minden alkalommal automatikus teszteket futtatnak.
+Code Review és refaktorálás: a csapat rendszeresen átnézi és javítja a kódot annak érdekében, hogy egyszerűbbé, tisztábbá és karbantarthatóbbá tegye
+
+XP fő elemei:
+1. Spike:
+A "Spike" egy rövid, célzott kísérlet vagy kutatás, amelynek célja egy probléma gyors megértése vagy egy technikai kérdés vizsgálata.
+Funkciója: Segít feltárni bizonytalanságokat vagy kockázatokat, mielőtt további fejlesztés történik. Ez általában akkor történik, ha egy adott technológiai megoldás vagy feladat megvalósítása nem egyértelmű.
+2. Requirements (Követelmények):
+Az XP-ben a követelmények a projekt fő céljait és funkcióit írják le, amelyeket a terméknek teljesítenie kell.
+Funkciója: Ezek az ügyfél igényeiből származnak, és irányt mutatnak a fejlesztési folyamat során.
+3. Stories (Történetek):
+A követelmények felbontása kisebb, megvalósítható egységekre, amelyeket a csapat képes feldolgozni egy iteráció során. Például: "A felhasználó képes lesz bejelentkezni a rendszerbe".
+Funkciója: Ezek az egyes funkciók, amelyeket az ügyfél kér, és amelyek egyedi célokat és értékeket képviselnek a felhasználók számára.
+4. Estimates (Becslések):
+Az XP csapata becslést készít a történetek megvalósításához szükséges időről és erőforrásokról.
+Funkciója: Segít meghatározni a munkamennyiséget és az iterációk hosszát, hogy reálisan megtervezzék a szállítási ütemtervet.
+5. Release Planning (Kiadási terv):
+A kiadási tervezés során a csapat megtervezi, hogy mely funkciókat és történeteket fogják szállítani a következő nagyobb kiadásban.
+Funkciója: Meghatározza a kiadás időpontját és a hozzá tartozó funkciókat, figyelembe véve az ügyfél prioritásait.
+6. Test Scenarios (Tesztforgatókönyvek):
+A fejlesztési folyamat során a csapat tesztforgatókönyveket dolgoz ki, amelyek segítenek a kód tesztelésében és annak biztosításában, hogy a termék megfelel az ügyfél elvárásainak.
+Funkciója: Biztosítja, hogy a rendszer minden része megfelelően működjön és hibamentes legyen.
+7. Iteration (Iteráció):
+Az iteráció egy rövid (1-2 hetes) fejlesztési ciklus, amely során egy vagy több történetet valósítanak meg és tesztelnek, majd adnak ki működőképes szoftververzió formájában.
+Funkciója: Lehetővé teszi a folyamatos visszajelzést, így a csapat gyorsan reagálhat a változó igényekre.
+8. Acceptance Test (Elfogadási teszt):
+Az elfogadási teszt célja annak ellenőrzése, hogy a fejlesztett funkciók teljesítik-e az ügyfél által támasztott követelményeket.
+Funkciója: Az ügyfél visszajelzést ad a kész funkciókról, és eldönti, hogy azok elfogadhatók-e.
+9. Customer Approval (Ügyfél jóváhagyása):
+Az elfogadási tesztek után az ügyfél jóváhagyja a funkciókat, jelezve, hogy azok megfelelnek az elvárásoknak.
+Funkciója: Az ügyfél visszajelzése alapján eldönthető, hogy a kód készen áll-e a kiadásra.
+10. Small Releases (Kis kiadások):
+Az XP-ben gyakori, kis méretű kiadások történnek, így a csapat rendszeresen szállít működő szoftvereket az ügyfél számára.
+Funkciója: Ez lehetővé teszi az ügyfél számára, hogy rendszeresen új funkciókat használhasson, és folyamatosan visszajelzést adjon, miközben a kockázatot is minimalizálja.
+
+XP visszjelzési körök (feedback loops):
+1. Kiadási terv (Hónapok):
+Hónapokra vonatkozó tervek arról, hogy a projekt mely főbb verzióit és funkcióit mikor fogják szállítani. 
+Visszajelzési funkciója: Az ügyfél jelzi, hogy a kiadott verzió fejlesztési iránya helyes-e.
+2. Iterációs terv (Hetek):
+Hetente/kéthetente meghatározzák, hogy mely funkciók vagy feladatok kerülnek fejlesztésre egy adott időszakban.
+Visszajelzési funkciója: A csapat és az ügyfél jelzi, hogy a megfelelő funkciók készültek-e el az iteráció végén.
+3. Elfogadási teszt (Napok):
+Naponta ellenőrzik, hogy a funkciók megfelelnek-e az ügyfél specifikációinak.
+Visszajelzési funkciója: Az ügyfél jelzi, hogy az elkészített funkciók tényleg azt nyújtják-e, amire szükség van.
+4. Stand-up meetingek (Egy nap):
+Napi rövid megbeszéléseken a csapat tagjai beszámolnak az előző napi munkájukról, és megvitatják az esetleges akadályokat.
+Visszajelzési funkciója: A csapattagok jelzik egymásnak, hogy hol állnak, milyen problémák merültek fel, és milyen irányba haladjanak.
+5. Páros tárgyalás (Órák):
+A páros programozás során a fejlesztők óránként egyeztetnek és visszajelzéseket adnak egymásnak a kóddal kapcsolatban.
+Visszajelzési funkciója: Két fejlesztő jelzi egymásnak, hogy hol szorul a kód azonnali javításra vagy optimalizációra.
+6. Egységteszt (Perc):
+Ezek futtatása és eredménye perceken belül visszajelzést ad arról, hogy az egyes kódrészek helyesen működnek-e.
+Visszajelzési funkciója: A program jelzi a fejlesztőnek, ha egy kódrész nem működik megfelelően.
+7. Páros programozás (Másodpercek):
+A két fejlesztő azonnali visszajelzést kap egymástól másodpercek alatt a közösen fejlesztett kódról.
+Visszajelzési funkciója: Két fejlesztő jelzi egymásnak, hogy új hibát vagy megoldást talált a kód javítására. 
+8. Code (Másodpercek):
+Maga a kódolás folyamata azonnali visszajelzést nyújt a fejlesztőnek, minden új sor kód egyből tesztelhető vagy ellenőrizhető.
+Visszajelzési funkciója: A build és teszt jelzi a fejlesztőnek, hogy a rendszer működik-e.
+
+Kanban:
+Vizuális projektmenedzsment és munkafolyamat-optimalizálási módszer, amely a lean menedzsmentből ered.
+Alapelvei:
+1. Folyamat vizualizálása (Kanban-tábla): 
+- feladatok kártyák, amiket állapotuk szerint oszlopokba húzunk:
+- To Do (Teendők): Ide kerülnek azok a feladatok, amelyek még nem kezdődtek el. Ezek a feladatok készen állnak arra, hogy valaki elkezdje őket.
+- In Progress (Folyamatban): Az itt lévő feladatokon a csapat éppen dolgozik. Mindenki látja, hogy melyik csapattag milyen feladaton dolgozik, ezáltal minimalizálódik a párhuzamos munka és a felesleges várakozás.
+- Review/Test (Felülvizsgálat/Tesztelés): Ez az oszlop a befejezett feladatokat tartalmazza, amelyek még felülvizsgálat vagy tesztelés alatt állnak. Itt az adott feladat minőségellenőrzése történik meg.
+- Done (Kész): Az elkészült feladatok kerülnek ide, amelyek már készen állnak a véglegesítésre vagy a kiszállításra.
+- Kanban-tábla eszközök pl.: Trello, Jira
+2. A feladatok korlátozása:
+- Work in Progress = WIP limit: korlátozzák, hány feladat lehet egyszerre folyamatban a túlterhelés elkerülése érdekében -> egyszerűség agilis elve
+3. Folyamatos fejlesztés:
+-  nem egy előre meghatározott iterációkra épülő módszer (mint pl a Scrum)
+- a feladatok folyamatosan kerülnek a táblára, és folyamatosan dolgoznak rajtuk, amint hely szabadul fel
+- cél: optimalizálni és időről időre finomítani a munkafolyamatokat
+- Kaizen állandó fejlődés elve (lásd. Lean IT)
+4. Munkafolyamatok átláthatósága és elemzése:
+- ciklusidők (to do-tól done-ig) és más mutatók elemzése -> folyamat optimalizáláció
+5. Érték maximalizálása:
+- legértékesebb feladatok végrehajtása
+- ügyféligények gyors kielégítése
+- minél rövidebb időn belüli szállítás -> nincs szükség iterációk végére várni, hanem azonnali lehet
+- munka folyamatos áramlása -> feladatok a lehető leggyorsabban kerüljenek done-ba
+Más módszerekkel kapcsolat: általában Scrummal vagy XP-vel kombináláják
+
+Lean IT:
+Agilis módszertan, amely a Lean menedzsment elveit alkalmazza az informatikai (IT) folyamatokban és szolgáltatásokban. 
+A Lean eredetileg a Toyota gyártási rendszeréből származik, és az a célja, hogy minél nagyobb értéket teremtsenek az ügyfelek számára, és minél inkább csökkentsék a pazarlást. 
+A Lean IT hasonló alapelvek mentén működik, de az IT környezetben, szoftverfejlesztési és informatikai szolgáltatások esetén alkalmazzák.
+Alapelvei:
+1. Ügyfélérték maximalizálása:
+Ügyfélközpontúság -> az ügyfél szempontjából nézünk minden folyamatot, és csak azokat a tevékenységeket tartjuk meg, amelyek közvetlen értéket nyújtanak, azaz az ügyfél igényeinek kielégítését szolgálja
+2. Pazarlás (waste) minimalizálása:
+Pazarlásnak minősül minden felesleges tevékenység és erőforrás, amely nem járul hozzá az értékteremtéshez az ügyfél számára.
+Pazarlás pl: felesleges mozgás, túltermelés, időpazarlás, hibás termékek/szoftverek, újra kell kezdeni valamit, felesleges várakozás a fejlesztés során
+3. Áramlás optimalizálása:
+Ügyfélérték növelésével és pazarlás csökkentésével a munka zökkenőmentes áramlásának biztosítása, hogy ne legyenek fennakadások vagy szűk keresztmetszetek a folyamatokban, így az információ és feladatok folyamatosan, akadálymentesen haladhassanak előre.
+Áramlás optimalizálása pl: várakozási idő csökkentése a feladatok között, csapatok együttműködésének és kommunikációjának javítása
+4. Folyamatos fejlesztés (Kaizen):
+A lean egyik legfontosabb alapelve a Kaizen, azaz a folyamatos fejlesztés és javítás kultúrája. 
+Minden munkatárs folyamatosan keresi azokat a lehetőségeket, amelyekkel növelhetik az értékteremtést és csökkenthetik a pazarlást.
+5. Emberek tisztelete:
+Minden munkatárs bevonása, bíztatása a kezdeményezésre és döntéshozatalban való részvételre, támogatása a problémák azonosításában és a megoldások megtalálásában.
+6. Pull rendszer:
+A munkát „húzzák”, nem pedig „tolják” előre a folyamatokon keresztül, azaz az igények az ügyféltől vagy a csapattól jönnek, nem pedig előre meghatározott ütemtervek alapján dolgoznak.
+Más módszerekkel kapcsolat: gyakran kiegészíti a Scrumot vagy Kanbant
+
+Lean IT értékáramlási térkép:
+1. Információáramlás (Information Flows):
+Alapesetben megmutatja, hogyan áramlik az információ a beszállító (Supplier), a gyártásirányítás (Production Control) és az ügyfél (Customer) között. Lean IT esetén a fejlesztők, a menedzsment és az ügyfél közötti információáramlást írja le.
+2. Anyagáramlás (Material Flows):
+Alapesetben anyagok fizikai áramlását mutatja a beszállítótól a különböző folyamatokon keresztül egészen a szállításig (Shipping). Lean IT esetén a szoftveres termék nem kézzel fogható, így inkább a rendszerek közötti adatáramlás formájában jelenik meg.
+3. Folyamatok (Processes):
+Alapesetben a fizikai gyártás lépéseit mutatja. Lean IT esetén digitális folyamatok, mint a kódolás, tesztelés, telepítés, hibajavítás, adatfeldolgozás vagy IT szolgáltatáskezelés lépései szerepelnek.
+4. Lead Time Ladder:
+A folyamatok átfutási idejét (lead time) és az egyes lépésekhez szükséges időt mutatja. Meghatározza, mennyi idő szükséges egy termék végighaladásához a folyamatokon keresztül.
+
+PDCA (Plan-Do-Check-Act) ciklus:
+Kaizen ciklusnak ez az alapja.
+- Tervezés (Plan): Fejlesztési lehetőségek azonosítása.
+- Cselekvés (Do): Választott fejlesztés megvalósítása és kipróbálása.
+- Ellenőrzés (Check): Fejlesztés hatékonyságának mérése.
+- Beavatkozás (Act): Hatékonynak bizonyult fejlesztés beépítése a folyamatba.
+
+Kaizen ciklus:
+Folyamatos fejlesztésre, emberek bevonására és problémamegoldásra ösztönző ábra.
+1. Azonosítás: Munkatársak bevonása, problémák és lehetőségek összegyűjtése közösen.
+2. Elemzés: Lehetséges megoldások keresése és kiválasztása.
+3. Fejlesztés: Az ideális megoldás kidolgozása.
+4. Megvalósítás: A megoldás bevezetése a gyakorlatba.
+5. Eredmények vizsgálata és módosítások: Rendszeres elemzés és szükséges korrekciók elvégzése.
+6. Szabványosítás: Siker esetén a megoldás bevezetése és következetes alkalmazása.
+7. Ismétlés: A ciklus folytatása új problémák azonosítása esetén.
+
+DevOps fejlesztési modell:
+Szervezeti megközelítés, melynek célja az együttműködés javítása a fejlesztés (Dev) és az üzemeltetés (Ops) között.
+Legfontosabb jellemzők:
+- Automatizáció: A fejlesztési és üzemeltetési folyamatok (pl. tesztelés, telepítés) automatizálása, így a manuális folyamatok helyett gyors és hatékony szállítás történik.
+- Folyamatos integráció (CI): A fejlesztők folyamatosan integrálják a kódjukat egy közös kódbázisba, amely automatikusan ellenőrzött és tesztelt.
+- Folyamatos szállítás és telepítés (CD): A kód rendszeres, gyakran akár napi szinten történő szállítása és telepítése az éles környezetbe, amint a tesztek sikeresen lefutottak.
+- Folyamatos tesztelés (CT): A szoftver minden fázisában (fejlesztés, tesztelés, telepítés) a folyamatos tesztelés elve érvényesül. Ez magában foglalja az automatizált tesztek mellett a manuális és felhasználói teszteket is.
+- Nemfunkcionális tesztelés: Nagy hangsúlyt fektet a teljesítmény és biztonsági tesztelésre is.
+- Monitoring és visszajelzés: Az üzemeltetés folyamatosan monitorozza az alkalmazást, és gyors visszajelzést ad a fejlesztőknek a hibákról vagy teljesítményproblémákról. Monitoring eszközök pl.: Nagios, Prometheus, New Relic.
+Előnyei: 
+- gyors visszajelzés és piacraadás -> agilis projektek
+- minőségbiztosítás, skálázhatóság -> komplex projektek
+Hátrányai: 
+- drága -> nagy kezdeti és karbantartási költségek az integrációs és automatatesztelési eszközök miatt
+
+DevOps lépései:
+Végtelen ciklus -> folytonos együttműködés a fejlesztés és az üzemeltetés között
+Dev (Fejlesztés) rész:
+1. Plan (Tervezés): Igények és követelmények meghatározása, projekt céljainak, funkcióinak, és ütemtervének kidolgozása
+- Design-Space Exploration (What-if scenarios): Különböző lehetséges forgatókönyvek tesztelése és vizsgálata, hogy felkészüljenek az esetleges működési problémákra.
+2. Code (Kódolás): Kódírás, új funkciók fejlesztése és frissítése.
+- Model Edition and Consistency: Modulok létrehozása és összehangolása, hogy azok konzisztens egységet alkossanak.
+3. Build (Buildelés): A kód összeállítása és fordítása egy futtatható formává, hogy az alkalmazás telepíthető legyen, és tesztelése megkezdődhessen.
+- Model Composition: Különálló modulok és komponensek összeállítása és összekapcsolása.
+4. Test (Tesztelés): Az alkalmazás működésének ellenőrzése automatizált és manuális tesztek futtatásával, hogy biztosítsák a szoftver hibamentességét.
+- Model Validation & Verification: Az új buildelt verzió tesztelése funkcionális szempontból és az ügyfél igények szempontjából is. 
+Ops (Üzemeltetés) rész:
+5. Release (Kiadás): A fejlesztés és üzemeltetés közötti átmeneti fázis, amikor a tesztelt alkalmazás készen áll a telepítésre.
+- Model / System Integration: Új modulok rendszerszintű integrálása a rendszerbe.
+6. Deploy (Telepítés): Az alkalmazás éles környezetbe való telepítése és konfigurálása, hogy a felhasználók elérhessék azt.
+- Allocation and Deployment Model: Erőforrások allokálása (pl. szerverek, tárhelyek beállítása) és a telepíthető új verzió kiépítése.
+7. Operate (Működtetés): Az alkalmazás folyamatos működtetése és biztosítása, hogy a felhasználók számára folyamatosan elérhető legyen.
+- Model Execution and Reconfiguration: Az új rendszer futtatása stabil és megbízható működésének fenntartása, szükség esetén a rendszer újrakonfigurálása.
+8. Monitor (Monitorozás): Az alkalmazás teljesítményének és állapotának folyamatos figyelése. A hibák vagy rendellenességek gyors észlelése és elemzése. 
+- Data Analysis, Model Discovery, and Execution Trace Analysis: ezekből a forrásokból az üzemeltetők folyamatosan gyűjtik és elemzik az adatokat, hogy gyorsan felismerjék az esetleges problémákat és javítsák az alkalmazást a jövőbeli kiadásokhoz
+
+Szoftverfejlesztési módszerek:
+
+1. Tesztvezérelt fejlesztés (TDD = Test-Driven Development):
+- először a fejlesztők írják meg a teszteseteket a funkciókhoz, mielőtt magát a kódot elkészítenék 
+- 3 fázisra oszlik: 
+  I. autoamata tesztesetek írása -> minden funkció lefedése
+  II. minimális kód megírása -> csak annyit, hogy a teszt átmenjen
+  III. refaktorálás -> kód javítása anélkül, hogy a funkcionalitás megváltozna
+- hatékony: rövid iterációkban, kis lépésekben való fejlesztésnél, kritikus rendszereknél, folyamatos visszajelzést igénylő projekteknél
+- előnyei: kód minősége és lefedettsége magas, mivel minden funkcióra van teszt, folyamatos visszajelzés
+- hátrányok: időigényes fejlesztés elején, nehézkes komplex rendszerek esetén, tesztek fenntartása költséges
+
+2. Elfogadásiteszt-vezérelt fejlesztés (ATDD = Acceptance Test-Driven Development):
+- a fejlesztők, tesztelők és ügyfelek közösen írják meg az elfogadási teszteket, amelyek a rendszer végfelhasználói igényeit tükrözik, azokat a feltételeket, amelyek alapján a fejlesztést elfogadják
+- kiterjeszti a TDD-t azzal, hogy nemcsak a fejlesztők, hanem a tesztelők és az üzleti szereplők is részt vesznek a tesztírásban
+- a folyamat azzal kezdődik, hogy a csapat közösen definiálja az elfogadási kritériumokat a felhasználói igények szerint, majd ez alapján indítja el a fejlesztést
+- hatékony: felhasználói igények és ügyfélközpontú projektekben, ügyféllel való szoros együttműködés esetén, nagyméretű projektek esetén
+- előnyök: ügyféligények korai tisztázása, félreértések csökkentése, folyamatos visszajelzés az ügyfél számára
+- hátrányok: közös munka az ügyféllel időigényes és problémás lehet, nem minden ügyfél tudja megfogalmazni igényeit
+
+3. Viselkedésvezérelt fejlesztés (BDD = Behavior-Driven Development):
+- a tesztelés és a kód fejlesztése során arra koncentrál, hogy a rendszer helyesen viselkedik-e az üzleti logika alapján
+- a cél, hogy egy közös nyelvet teremtsenek a fejlesztők, tesztelők és üzleti szereplők, melyet mindenki megért
+- teszteket természetes nyelven írják meg, általában Given-When-Then struktúrában -> given (viselkedés előtti állapot), when (milyen viselkedés történik), then (milyen elvárt változást idéz elő a viselkedés)
+- hatékony: kommunikáció-központú fejlesztési folyamatokban, ahol a nem technikai résztvevők is fontos szerepet játszanak
+- előnyök: jobb kommunikáció az üzleti és technikai szereplők között, tesztek érthetőek minden csapattagnak, jobban igazodnak a valós üzleti igényekhez
+- hátrányok: többletidő szükséges a kommunikációra, nehézkes lehet a tesztlefedettség és dokumentáció fenntartása
+
+4. Szakterület-vezérelt tervezés (DDD = Domain-Driven Design):
+- szakterületi problémák megértésére és az azoknak megfelelő szoftver kialakítására fókuszál
+- a fejlesztők szorosan együttműködnek a szakterületi szakértőkkel (domain experts) annak érdekében, hogy a szoftver megfeleljen az üzleti igényeknek
+- szakterületi modellek és üzleti szabályok mentén tesztelik a szoftvert, hogy helyesen modellezi-e a szükséges folyamatokat
+- hatékony: komplex üzleti problémák esetében, ahol a szakterület alapos megértése kulcsfontosságú, vagy nagy rendszerek fejlesztésénél, ahol a különböző szakterületek közötti kapcsolatok bonyolultak
+- előnyök: szakterületi szakértők és fejlesztők közös nyelvet használnak, könnyebb megértés és jobb átláthatóság a rendszerről a fejlesztők számára is
+- hátrányok: nagyobb tanulási görbe a fejlesztőknek, időigényes a szakterület alapos megismerése és modellezése
+
+5. Feature-vezérelt fejlesztés (FDD = Feature-Driven Development):
+- a szoftvert funkciókra bontják le, ahol minden funkció egy önálló, jól definiált feladat, amelyet a fejlesztők külön-külön készítenek el és integrálnak a rendszerbe iteratívan
+- a cél, hogy a szoftver gyorsan jól definiált és mérhető legyen
+- minden elkészült funkciót külön tesztelnek, mielőtt integrálnák a rendszerbe
+- hatékony: nagyobb, komplexebb és hosszútávú projektek esetén, ahol a feladatok felosztása és párhuzamos lefejlesztése, fokozatos integrálása fontos
+- előnyök: feladatok jól követhetőek és könnyen priorizálhatóak, lehetővé teszi a rövid iterációkban való fejlesztést és fokozatos kiadást
+- hátrányok: nagy projektek esetén nehézkes lehet a funkciók felosztása, és a funkciók közötti kapcsolatok kezelése
+
+Shift left megközelítés:
+Korai tesztelés alapelvének megvalósítása -> cél, hogy a fejlesztés életciklusának folyamatában a tesztelés minél korábban legyen megkezdve és elvégezve (minél inkább "balra legyen tolva" az életciklus modell ábráján)
+Korai szakaszokban több erőforrást igényel, viszont ez hosszú távon megtérül.
+Shift left módszerek:
+- specifikációk felülvizsgálata a tesztelés szempontjából
+- tesztesetek megírása a kód létrejötte előtt
+- folyamatos integráció és szállítás (CI és CD)
+- forráskód statikus tesztelése dinamikus előtt (code review)
+- nem funkcionális tesztelések korai megkezdése

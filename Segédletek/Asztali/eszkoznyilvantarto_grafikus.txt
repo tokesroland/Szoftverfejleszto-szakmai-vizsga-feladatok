@@ -1,0 +1,171 @@
+Eszköznyilvántartó (grafikus)
+-----------------------------
+
+Projekt létrehozása
+
+Adatbázis importálása
+
+Adatbázis kapcsolat: MySQL.Data csomag
+
+public class Database
+{
+	private MySqlConnection connection;
+	public Database()
+	{
+        	string connectionString = "Server=localhost;Database=eszkoznyilvantarto;User ID=root;";
+        	connection = new MySqlConnection(connectionString);
+    	}
+	public MySqlConnection GetConnection()
+    	{
+        	return connection;
+    	}
+	public void OpenConnection()
+    	{
+        	if (connection.State != ConnectionState.Open)
+        	{
+            		connection.Open();
+        	}
+	}
+	public void CloseConnection()
+	{
+        	if (connection.State != ConnectionState.Closed)
+        	{
+            		connection.Close();
+        	}
+	}
+}
+
+Alkalmazottak lista betöltése:
+
+private void LoadAlkalmazottak()
+{
+	Database db = new Database();
+	db.OpenConnection();
+	string query = "SELECT nev FROM alkalmazottak";
+	MySqlCommand cmd = new MySqlCommand(query, db.GetConnection());
+	MySqlDataReader reader = cmd.ExecuteReader();
+	while (reader.Read())
+    	{
+        	lbAlkalmazottak.Items.Add(reader.GetString("nev"));
+	}
+	db.CloseConnection();
+}
+
+Kiválasztott alkalmazott eszközeinek megjelenítése:
+
+lbAlkalmazottak.SelectedIndexChanged += lbAlkalmazottak_SelectedIndexChanged;
+
+private void lbAlkalmazottak_SelectedIndexChanged(object sender, EventArgs e)
+{
+	string alkalmazott = lbAlkalmazottak.SelectedItem.ToString();
+	LoadEszkozok(alkalmazott);
+}
+
+private void LoadEszkozok(string alkalmazott)
+{
+	Database db = new Database();
+	db.OpenConnection();
+	string query = "SELECT e.nev AS Eszköz, e.tipus AS Típus, e.hasznalat_kezdete AS 'Használat kezdete'       FROM eszkozok e JOIN alkalmazottak a ON e.alkalmazott_azonosito = a.azonosito WHERE a.nev = @nev";
+	MySqlCommand cmd = new MySqlCommand(query, db.GetConnection());
+	cmd.Parameters.AddWithValue("@nev", alkalmazott);
+	MySqlDataReader reader = cmd.ExecuteReader();
+	dgvEszkozok.Rows.Clear();
+	if (reader.HasRows)
+	{
+        	while (reader.Read())
+        	{
+            		dgvEszkozok.Rows.Add(reader.GetString("Eszköz"), reader.GetString("Típus"), reader.GetDateTime("Használat kezdete").ToShortDateString());
+			lblNincs.Visible = false;
+        	}
+	}
+	else
+	{
+        	lblNincs.Visible = true;
+	}
+	db.CloseConnection();
+}
+
+Az új eszköz felvitele:
+
+public class UjEszkoz : Form
+{
+	private Database db;
+	public UjEszkoz()
+	{
+        	InitializeComponent();
+        	db = new Database();
+	}
+	private void UjEszkoz_Load(object sender, EventArgs e)
+	{
+		db.OpenConnection();
+		string query = "SELECT nev FROM alkalmazottak";
+		MySqlCommand cmd = new MySqlCommand(query, db.GetConnection());
+		MySqlDataReader reader = cmd.ExecuteReader();
+		while (reader.Read())
+		{
+            		cbAlkalmazottak.Items.Add(reader.GetString("nev"));
+		}
+		query = "SELECT DISTINCT tipus FROM eszkozok";
+		cmd = new MySqlCommand(query, db.GetConnection());
+		reader = cmd.ExecuteReader();
+		while (reader.Read())
+		{
+            		cbTipusok.Items.Add(reader.GetString("tipus"));
+		}
+		db.CloseConnection();
+	}
+	private void btnUjEszkoz_Click(object sender, EventArgs e)
+	{
+		if (string.IsNullOrEmpty(tbNev.Text))
+        	{
+			MessageBox.Show("A név mezőt kötelező kitölteni!", "Hiba", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+			return;
+		}
+		if (string.IsNullOrEmpty(cbTipusok.Text) || cbTipusok.SelectedIndex == -1)
+        	{
+			MessageBox.Show("A típus mezőt kötelező kitölteni vagy a típust kiválasztani!", "Hiba", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+			return;
+		}
+		if (cbAlkalmazottak.SelectedIndex == -1)
+        	{
+			MessageBox.Show("Az alkalmazottat kötelező kiválasztani!", "Hiba", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+			return;
+		}
+		if (dtpHasznalatKezdete.Value == null)
+        	{
+			MessageBox.Show("A használat kezdetének dátumát kötelező megadni!", "Hiba", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+			return;
+		}
+		string eszkozNev = tbNev.Text;
+		string eszkozTipus = cbTipusok.SelectedItem.ToString();
+		string alkalmazottNev = cbAlkalmazottak.SelectedItem.ToString();
+		DateTime hasznalatKezdete = dtpHasznalatKezdete.Value;
+		db.OpenConnection();
+		string query = "SELECT azonosito FROM alkalmazottak WHERE nev = @alkalmazottNev";
+		MySqlCommand cmd = new MySqlCommand(query, db.GetConnection());
+		cmd.Parameters.AddWithValue("@alkalmazottNev", alkalmazottNev);
+		int alkalmazottAzonosito = Convert.ToInt32(cmd.ExecuteScalar());
+		query = "INSERT INTO eszkozok (nev, tipus, alkalmazott_azonosito, hasznalat_kezdete) VALUES (@nev, @tipus, @alkalmazottAzonosito, @hasznalatKezdete)";
+		cmd = new MySqlCommand(query, db.GetConnection());
+		cmd.Parameters.AddWithValue("@nev", eszkozNev);
+		cmd.Parameters.AddWithValue("@tipus", eszkozTipus);
+		cmd.Parameters.AddWithValue("@alkalmazottAzonosito", alkalmazottAzonosito);
+		cmd.Parameters.AddWithValue("@hasznalatKezdete", hasznalatKezdete);
+		cmd.ExecuteNonQuery();
+		db.CloseConnection();
+		MessageBox.Show("Az új eszköz sikeresen rögzítve!", "Siker", MessageBoxButtons.OK, MessageBoxIcon.Information);
+		tbNev.Clear();
+		cbTipusok.SelectedIndex = -1;
+		cbAlkalmazottak.SelectedIndex = -1;
+		dtpHasznalatKezdete.Value = DateTime.Today;
+	}
+}
+
+Az új eszköz ablak megnyitása:
+
+private void btnUjEszkoz_Click(object sender, EventArgs e)
+{
+    UjEszkoz ujEszkoz = new UjEszkoz();
+    ujEszkoz.ShowDialog();
+}
+

@@ -1,0 +1,429 @@
+Céges autók grafikus feladat (Windows Forms)
+--------------------------------------------
+
+Projekt létrehozása:
+- Visual Studio
+- Windows Forms App (.NET) projekt
+- név: CegesParkolohaz
+
+Adatbázis-kapcsolat beállítása: (MySql.Data csomag)
+- NuGet csomagkezelő (Tools → NuGet Package Manager → Manage NuGet Packages for Solution…)
+- MySql.Data csomag telepítése
+- új osztály: Database.cs
+
+private string connectionString = "server=localhost;database=parkolohaz;uid=root;pwd=;";
+public MySqlConnection GetConnection()
+{
+	return new MySqlConnection(connectionString);
+}
+
+Kapcsolat tesztelése:
+- Button (gomb) hozzáadása a főablakhoz (Form1.cs)
+- ha nem látszik a Toolbox: View (Nézet) menüpont / Toolbox (Eszköztár)
+- a Button vezérlő a Common Controls (Gyakori vezérlők) csoportban van
+- Properties (Tulajdonságok) ablak / Alphabetical
+- a gomb neve (Name): btnTestConnection
+- a gomb szövege (Text): Kapcsolat tesztelése
+- esetleges átméretezés
+- kattintás duplán a gombra -> eseménykezelő függvény
+
+private void btnTestConnection_Click(object sender, EventArgs e)
+{
+	Database db = new Database();
+	using (MySqlConnection conn = db.GetConnection())
+	{
+        	try
+        	{
+            		conn.Open();
+            		MessageBox.Show("Sikeres kapcsolat!", "OK", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        	}
+        	catch (Exception ex)
+        	{
+            		MessageBox.Show("Hiba a kapcsolat során: " + ex.Message, "Hiba", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        	}
+    	}
+}
+
+Megpróbálja megnyitni a kapcsolatot az adatbázissal. Ha sikerül, megjelenik egy "Sikeres kapcsolat!" üzenet. Ha nem sikerül, egy hibaüzenetet kapunk, ami segít kideríteni, mi a gond.
+
+A tesztelés után távolítsuk el a teszteléshez létrehozott gombot és függvényt.
+
+Alkalmazottak nevének megjelenítése:
+- ListBox vezérlő hozzáadása a Toolbox-ból a Form1.cs [Design] nézetben
+- név: lbAlkalmazottak
+- jobb gomb: View Code
+
+public Form1()
+{
+	InitializeComponent();
+	GetAlkalmazottak();
+}
+
+// Az alkalmazottak listájának lekérése az adatbázisból
+private void GetAlkalmazottak()
+{
+	// Lista létrehozása, hogy eltároljuk az alkalmazottak neveit
+	List<string> alkalmazottak = new List<string>();
+	// Kapcsolódunk az adatbázishoz
+	using (var connection = new Database().GetConnection())
+	{
+		// Kapcsolat megnyitása
+        	connection.Open();
+		// SQL lekérdezés az alkalmazottak neveinek lekérésére
+        	string query = "SELECT nev FROM alkalmazottak";
+		// A lekérdezés előkészítése
+        	MySqlCommand command = new MySqlCommand(query, connection);
+		// Lekérdezés végrehajtása és az adatok olvasása
+        	MySqlDataReader reader = command.ExecuteReader();
+		// Amíg van új sor az eredményben
+        	while (reader.Read())
+        	{
+	    		// Az alkalmazottak neveit hozzáadjuk a listához
+            		alkalmazottak.Add(reader.GetString("nev"));                    
+        	}
+    	}
+    	// Az alkalmazottak listáját hozzárendeljük a ListBox-hoz
+    	lbAlkalmazottak.DataSource = alkalmazottak;
+}
+
+Alapértelmezetten egy elem választható ki.
+
+SelectionMode: egyszerre hány elemet lehet kiválasztani
+- None: Nem lehet semmilyen elemet kijelölni.
+- One: Egyetlen elemet lehet kijelölni egyszerre.
+- MultiSimple: Több elemet is kijelölhetünk, de nem szükséges a Ctrl vagy Shift gombok használata.
+- MultiExtended: Több elemet jelölhetünk ki úgy, hogy a Ctrl vagy Shift gombokat használjuk (akár egymás melletti, akár tetszőleges elemeket).
+
+Beállítás:
+- Properties ablakban: keressük meg a SelectionMode tulajdonságot és válasszuk ki a kívánt opciót.
+- Kódban: pl. lbAlkalmazottak.SelectionMode = SelectionMode.MultiSimple;
+
+A kiválasztott alkalmazott bérléseinek megjelenítése:
+- adjunk hozzá egy DataGridView vezérlőt a formhoz
+- név: dgvBerlesek
+
+Berles osztály:
+
+class Berles
+{
+	public DateTime Datum { get; set; }
+	public string Rendszam { get; set; }
+	public string Tipus { get; set; }
+	public int KmOraAllas { get; set; }
+	public bool Visszahozta { get; set; }
+}
+
+Amikor egy alkalmazottat kiválasztunk a ListBox-ban, automatikusan lekérdezi majd a bérlés adatokat és frissíti a DataGridView-t a megfelelő információval (ami egy objektumban lesz).
+
+Meghívjuk a SetupDataGridView-t, ami az oszlopok fejlécének szövegét, valamint az oszlopok szélességét beállítja.
+
+Beállítjuk az esemény figyelőt a ListBox-hoz.
+
+Ha vannak elemek benne, kiválasztjuk az elsőt és meghívjuk a függvényt.
+
+public Form1()
+{
+	// Form vezérlők inicializálása (pl. gombok, listboxok, stb.)
+	InitializeComponent();
+	// Az alkalmazottak listájának lekérése
+	GetAlkalmazottak();
+	// A DataGridView (bérlések listázása) beállítása
+	SetupDataGridView();
+	// A ListBox kiválasztás változásának figyelése
+	lbAlkalmazottak.SelectedIndexChanged += lbAlkalmazottak_SelectedIndexChanged;
+	// Ha van alkalmazott a listában, automatikusan az első alkalmazott kerül kiválasztásra, és megjelenítjük a bérlését
+	if (lbAlkalmazottak.Items.Count > 0)
+	{
+		// Az első elem kijelölése
+		lbAlkalmazottak.SelectedIndex = 0;
+		// Az alkalmazott bérléseinek megjelenítése
+		lbAlkalmazottak_SelectedIndexChanged(this, EventArgs.Empty);
+	}
+}
+
+// A DataGridView beállítása, hogy az adatokat szépen jelenítse meg
+private void SetupDataGridView()
+{
+	// Minden előző oszlop törlése
+	dgvBerlesek.Columns.Clear();
+	// Az új oszlopok hozzáadása
+	dgvBerlesek.Columns.Add("datum", "Dátum");
+	dgvBerlesek.Columns.Add("rendszam", "Rendszám");
+	dgvBerlesek.Columns.Add("tipus", "Autó");
+	dgvBerlesek.Columns.Add("kmAllas", "km óra állás");
+	dgvBerlesek.Columns.Add("bekiHajtas", "Irány");
+	// Az oszlopok szélességének beállítása
+	dgvBerlesek.Columns["datum"].Width = 120;
+	dgvBerlesek.Columns["rendszam"].Width = 120;
+	dgvBerlesek.Columns["tipus"].Width = 120;
+	dgvBerlesek.Columns["kmAllas"].Width = 120;
+	dgvBerlesek.Columns["bekiHajtas"].Width = 120;
+}
+
+// A ListBox-ban történt kiválasztás változásának kezelése
+private void lbAlkalmazottak_SelectedIndexChanged(object sender, EventArgs e)
+{
+	// Ha van kiválasztott alkalmazott	
+	if (lbAlkalmazottak.SelectedItem != null)
+	{
+		// A kiválasztott alkalmazott neve
+		string alkalmazottNev = lbAlkalmazottak.SelectedItem.ToString();
+		// A kiválasztott alkalmazott bérléseinek lekérése
+		GetBerlesek(alkalmazottNev);
+	}
+}
+
+// Az alkalmazott bérléseinek lekérése
+private void GetBerlesek(string alkalmazottNev)
+{
+	// Lista, hogy eltároljuk az alkalmazott bérléseit (Berles objektumokat fog tartalmazni)
+	List<Berles> berlesek = new List<Berles>();
+	// Kapcsolódunk az adatbázishoz
+	using (var connection = new Database().GetConnection())
+	{
+		// Kapcsolat megnyitása
+		connection.Open();
+		// SQL lekérdezés, ami a bérléseket kéri le az alkalmazott neve alapján
+		string query = "SELECT p.datum, au.rendszam, au.tipus, p.kmAllas, p.bekiHajtas FROM parkolo p JOIN autok au ON p.autoAzon = au.azon JOIN alkalmazottak al ON p.alkalmazottAzon = al.azon WHERE al.nev = @nev";
+
+A lekérdezésben a @ jel a paraméterezett lekérdezés szintaxisa. A MySQL és más adatbázis-kezelők támogatják a paramétereket, amik biztonságosabbá és hatékonyabbá teszik a lekérdezéseket.
+Elkerüli az SQL injekciót:
+Az SQL injekció olyan támadási forma, ahol a felhasználó olyan adatokat küld a rendszernek, amelyek SQL parancsokat tartalmaznak, így manipulálhatják az adatbázist. Ha a felhasználó közvetlenül egy lekérdezésbe illeszti be az adatokat, könnyen kihasználható ez a biztonsági rés. A @nev használatával a paraméterek biztonságos módon kerülnek az SQL lekérdezésbe, és nem veszélyeztetik az adatbázis integritását.
+Olvasmányosabb és könnyebben karbantartható kód:
+A paraméterek használatával a lekérdezés sokkal tisztább és könnyebben érthető lesz. Ahelyett, hogy közvetlenül beágyaznád a változókat a lekérdezésbe, azokat paraméterek formájában adod át, így a kód nem lesz bonyolult.
+Újrahasználhatóság és teljesítmény:
+A MySQL szerver optimalizálja az SQL lekérdezéseket, ha paramétereket használunk. Mivel a szerver egyszer már feldolgozta a paraméterezett lekérdezést, az ismételt futtatások gyorsabbak lesznek, hiszen nem kell újra parsolni a teljes lekérdezést.
+Hogyan működik:
+A @nev paraméter a lekérdezésben egy helyettesítő jel, amit később a programban valódi értékkel helyettesítünk.
+A command.Parameters.AddWithValue("@nev", alkalmazottNev) sorban adjuk meg, hogy a @nev paraméter értéke az alkalmazottNev változó értéke legyen.
+
+		// A lekérdezés előkészítése
+		MySqlCommand command = new MySqlCommand(query, connection);
+		// Az alkalmazott nevét paraméterként hozzáadjuk a lekérdezéshez
+		command.Parameters.AddWithValue("@nev", alkalmazottNev);
+		// A lekérdezés végrehajtása
+		MySqlDataReader reader = command.ExecuteReader();
+		// Amíg van új sor az eredményben
+		while (reader.Read())
+		{
+			// A lekért adatokat hozzárendeljük a bérlés objektumhoz
+			berlesek.Add(new Berles
+			{
+				Datum = reader.GetDateTime("datum"),
+				Rendszam = reader.GetString("rendszam"),
+				Tipus = reader.GetString("tipus"),
+				KmOraAllas = reader.GetInt32("kmAllas"),
+				Visszahozta = reader.GetBoolean("bekiHajtas")
+			});
+		}
+	}
+	// Minden előző sort törlünk a DataGridView-ból
+	dgvBerlesek.Rows.Clear();
+	foreach (var berles in berlesek)
+	{
+		// Az új bérléseket hozzáadjuk a DataGridView-hoz
+		dgvBerlesek.Rows.Add(berles.Datum, berles.Rendszam, berles.Tipus, berles.KmOraAllas, berles.Visszahozta ? "be" : "ki");
+	}
+}
+
+XY bérlései:
+- Label vezérlő hozzáadása
+- név: lblAlkalmazott
+- Font: kicsit félkövér, 24
+
+private void lbAlkalmazottak_SelectedIndexChanged(object sender, EventArgs e)
+{
+	if (lbAlkalmazottak.SelectedItem != null)
+	{
+		string alkalmazottNev = lbAlkalmazottak.SelectedItem.ToString();
+		lblAlkalmazott.Text = $"{alkalmazottNev} bérlései";
+		GetBerlesek(alkalmazottNev);
+	}
+}
+
+Ha egy alkalmazottnak nem volt még bérlése, akkor jelenjen meg a „Nem bérelt még autót” felirat egy jól látható helyen:
+- Label vezérlő hozzáadása
+- név: lblNincsBerles
+- Font: 16
+- Text: Nem bérelt még autót
+
+GetBerlesek metódus:
+
+if (berlesek.Count > 0)
+{
+	foreach (var berles in berlesek)
+        {
+        	dgvBerlesek.Rows.Add(berles.Datum, berles.Rendszam, berles.Tipus, berles.KmOraAllas, berles.Visszahozta ? "be" : "ki");
+        }
+	// Ha vannak bérlések, elrejtjük a 'Nem bérelt még autót' szöveget
+        lblNincsBerles.Visible = false;  
+}
+else
+{
+	// Ha nincsenek bérlések, megjelenítjük a 'Nem bérelt még autót' szöveget
+        lblNincsBerles.Visible = true;  
+}
+
+Gomb a másik ablakhoz:
+- új Button hozzáadása
+- név: btnUjBerles
+- Text: Új bérlés felvétele
+
+Dupla kattintás -> eseménykezelő függvény:
+
+private void btnUjBerles_Click(object sender, EventArgs e)
+{
+
+}
+
+Hozzunk létre egy új Form-ot a projektben:
+- a Solution Explorer-ben kattintsunk jobb gombbal a projekt nevére
+- Add -> Windows Form (Windows Forms)
+- név: UjBerles.cs
+
+private void btnUjBerles_Click(object sender, EventArgs e)
+{
+	UjBerles ujBerles = new UjBerles();
+	ujBerles.ShowDialog();
+}
+
+Űrlap:
+- Label: Új bérlés felvétele, lblCim, 16, AutoSize tulajdonságot állítsuk False-ra, TextAlign tulajdonságot állítsuk MiddleCenter-re (így a szöveg középre kerül a labelen belül), Anchor tulajdonságot állítsuk Top, None-ra (hogy ne nyúljon el feleslegesen), átméretezés
+- Label: Név:, lblNev, 14
+- ComboBox: cmbNev, DropDownStyle: DropDownList (hogy csak a listából lehessen választani)
+
+ComboBox feltöltése kódból:
+
+GetAlkalmazottak();
+
+private void GetAlkalmazottak()
+{
+	List<string> alkalmazottak = new List<string>();
+	using (var connection = new Database().GetConnection())
+	{
+		connection.Open();
+		string query = "SELECT nev FROM alkalmazottak";
+		MySqlCommand command = new MySqlCommand(query, connection);
+		MySqlDataReader reader = command.ExecuteReader();
+		while (reader.Read())
+		{
+			alkalmazottak.Add(reader.GetString("nev"));
+		}
+	}
+	cmbNev.DataSource = alkalmazottak;
+}
+
+- Label: Autó:, lbAuto, 14
+- ComboBox: cmbAuto, DropDownStyle: DropDownList
+
+ComboBox feltöltése kódból:
+
+GetAutok();
+
+private void GetAutok()
+{
+	List<string> autok = new List<string>();
+	using (var connection = new Database().GetConnection())
+	{
+		connection.Open();
+		string query = "SELECT rendszam FROM autok";
+		MySqlCommand command = new MySqlCommand(query, connection);
+		MySqlDataReader reader = command.ExecuteReader();
+		while (reader.Read())
+		{
+			autok.Add(reader.GetString("rendszam"));
+		}
+	}
+	cmbAuto.DataSource = autok;
+}
+
+- Label: Dátum:, lblDatum, 14
+
+Windows Forms-ban alapértelmezetten csak a DateTimePicker vezérlő van, amely dátumot és időt is tud kezelni, de külön dátum- és időválasztó nincs beépítve.
+
+Viszont megoldhatjuk ezt az alábbi módon: Két külön DateTimePicker – egy a dátumra, egy az időre
+
+- DateTimePicker: dtpDatum, Format: Short
+- Label: Időpont:, lblIdopont, 14
+- DateTimePicker: dtpDatum, Format: Time
+- Label: Km óra állása:, lblKm, 14
+- NumericUpDown: nudKm
+- RadioButton: rbKihajtas, 14, Kihajtás, Checked: True
+- RadioButton: rbBehajtas, 14, Behajtás
+- Button: btnFelvetel, Felvétel, 12
+
+private void btnFelvitel_Click(object sender, EventArgs e)
+{
+	// Az alkalmazott neve és az autó rendszáma a ComboBox-ból
+    	string alkalmazottNev = cmbNev.SelectedItem?.ToString();
+    	string autoRendszam = cmbAuto.SelectedItem?.ToString();
+	// A dátum és az időpont kombinálása
+    	DateTime datum = dtpDatum.Value.Date + dtpIdopont.Value.TimeOfDay;
+	// A kilométeróra állás
+    	int kmOraAllas = (int)nudKm.Value;
+	// A behajtás / kihajtás érték beállítása
+    	int beKiHajtas = rbKihajtas.Checked ? 0 : 1;
+    	using (var connection = new Database().GetConnection())
+    	{
+        	connection.Open();
+		// Az autó azonosítójának lekérdezése rendszám alapján
+        	int autoAzonosito = 0;
+        	string query = "SELECT azon FROM autok WHERE rendszam = @rendszam";
+        	MySqlCommand command = new MySqlCommand(query, connection);
+        	command.Parameters.AddWithValue("@rendszam", autoRendszam);
+        	var result = command.ExecuteScalar();
+
+A command.ExecuteScalar() metódus akkor hasznos, amikor egy lekérdezés csak egyetlen értéket ad vissza, például egy számot, dátumot, vagy egyéb egyedi értéket.
+
+        	if (result != null)
+        	{
+            		autoAzonosito = Convert.ToInt32(result);
+        	}
+		// Az alkalmazott azonosítójának lekérdezése név alapján
+        	int alkalmazottAzonosito = 0;
+        	query = "SELECT azon FROM alkalmazottak WHERE nev = @nev";
+        	command = new MySqlCommand(query, connection);
+        	command.Parameters.AddWithValue("@nev", alkalmazottNev);
+        	result = command.ExecuteScalar();
+        	if (result != null)
+        	{
+            		alkalmazottAzonosito = Convert.ToInt32(result);
+        	}
+        	query = "INSERT INTO parkolo (datum, autoAzon, alkalmazottAzon, kmAllas, beKiHajtas) VALUES (@datum, @autoAzon, @alkalmazottAzon, @kmAllas, @beKiHajtas)";
+		// Adatok beállítása a beszúráshoz
+        	command = new MySqlCommand(query, connection);
+        	command.Parameters.AddWithValue("@datum", datum);
+        	command.Parameters.AddWithValue("@autoAzon", autoAzonosito);
+        	command.Parameters.AddWithValue("@alkalmazottAzon", alkalmazottAzonosito);
+        	command.Parameters.AddWithValue("@kmAllas", kmOraAllas);
+        	command.Parameters.AddWithValue("@beKiHajtas", beKiHajtas);
+		// SQL parancs végrehajtása
+        	command.ExecuteNonQuery();
+		// ablak bezárása
+        	this.Close();
+    	}
+}
+
+Ahhoz, hogy automatikusan frissüljön a bérlés lista, miután egy új bérlés bekerült az adatbázisba, az UjBerles űrlap felvitele után egy eseményt vagy metódust kellene hívni a főablakban, ami frissíti a bérlés listát.
+
+Az UjBerles ablakban egy eseményt kellene létrehozni, amelyet a főablak fog figyelni.
+
+public event Action berlesRogzitve;
+
+Az ablak bezárás előtt:
+// Az esemény meghívása a bérlés sikeres rögzítése után
+berlesRogzitve.Invoke();
+
+Főablak:
+UjBerles ujBerles = new UjBerles();
+// Az esemény regisztrálása
+ujBerles.berlesRogzitve += () =>
+{
+	// Frissítsük a bérlés listát, amikor az új bérlés rögzítve van
+    	string alkalmazottNev = lbAlkalmazottak.SelectedItem.ToString();
+    	GetBerlesek(alkalmazottNev);
+};
+ujBerles.ShowDialog();
+
+Ha egy adott alkalmazottnál az új rekordok a táblázatban nem a végén jelennek meg:
+ORDER BY p.azon

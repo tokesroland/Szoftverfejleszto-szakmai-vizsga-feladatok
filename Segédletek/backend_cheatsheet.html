@@ -1,0 +1,1422 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Backend Vizsga Cheat Sheet</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #141720;
+    --surface2: #1a1f2e;
+    --border: #252b3b;
+    --accent-sql: #f97316;
+    --accent-php: #818cf8;
+    --accent-js: #facc15;
+    --accent-css: #34d399;
+    --accent-algo: #f472b6;
+    --accent-gen: #60a5fa;
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --code-bg: #0a0c10;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Syne', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 0 0 60px;
+  }
+
+  /* HEADER */
+  header {
+    background: linear-gradient(135deg, #0d0f14 0%, #141728 50%, #0d0f14 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 36px 40px 28px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(10px);
+  }
+
+  header h1 {
+    font-size: 1.6rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    background: linear-gradient(90deg, var(--accent-sql), var(--accent-php), var(--accent-js));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 6px;
+  }
+
+  header p { color: var(--muted); font-size: 0.85rem; font-family: 'JetBrains Mono', monospace; }
+
+  /* NAV TABS */
+  nav {
+    display: flex;
+    gap: 6px;
+    padding: 16px 40px 0;
+    flex-wrap: wrap;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+  }
+
+  .tab-btn {
+    padding: 8px 18px;
+    border: 1px solid var(--border);
+    border-bottom: none;
+    border-radius: 8px 8px 0 0;
+    background: var(--surface);
+    color: var(--muted);
+    cursor: pointer;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    font-weight: 600;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+
+  .tab-btn:hover { color: var(--text); background: var(--surface2); }
+  .tab-btn.active { color: #fff; border-color: var(--active-color, #fff); background: var(--surface2); box-shadow: 0 0 12px -4px var(--active-color, #fff); }
+
+  /* CONTENT */
+  .tab-content { display: none; padding: 32px 40px; animation: fadeIn 0.2s ease; }
+  .tab-content.active { display: block; }
+
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* SECTION */
+  .section {
+    margin-bottom: 36px;
+  }
+
+  .section-title {
+    font-size: 0.7rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 14px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* GRID */
+  .grid { display: grid; gap: 14px; }
+  .grid-2 { grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); }
+  .grid-3 { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+
+  /* CARD */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 20px;
+    transition: border-color 0.15s;
+  }
+
+  .card:hover { border-color: var(--accent); }
+
+  .card h3 {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.04em;
+  }
+
+  /* CODE BLOCK */
+  pre, code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    line-height: 1.6;
+  }
+
+  pre {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    overflow-x: auto;
+    margin-top: 8px;
+    white-space: pre;
+  }
+
+  .kw { color: #c792ea; }
+  .fn { color: #82aaff; }
+  .str { color: #c3e88d; }
+  .num { color: #f78c6c; }
+  .cmt { color: #546e7a; font-style: italic; }
+  .op { color: #89ddff; }
+  .tag { color: #f07178; }
+  .attr { color: #ffcb6b; }
+  .var { color: #eeffff; }
+  .type { color: #ffcb6b; }
+  .acc { color: var(--accent); font-weight: 600; }
+
+  /* TABLE */
+  .tbl { width: 100%; border-collapse: collapse; font-size: 0.8rem; font-family: 'JetBrains Mono', monospace; margin-top: 8px; }
+  .tbl th { background: var(--code-bg); color: var(--accent); padding: 8px 12px; text-align: left; font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; border: 1px solid var(--border); }
+  .tbl td { padding: 7px 12px; border: 1px solid var(--border); color: var(--text); vertical-align: top; }
+  .tbl tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
+  .tbl tr:hover td { background: rgba(255,255,255,0.04); }
+
+  /* BADGE */
+  .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.68rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    margin-right: 4px;
+    margin-bottom: 4px;
+  }
+
+  /* CALLOUT */
+  .callout {
+    border-left: 3px solid var(--accent);
+    background: rgba(255,255,255,0.03);
+    padding: 12px 16px;
+    border-radius: 0 8px 8px 0;
+    margin-top: 10px;
+    font-size: 0.82rem;
+    line-height: 1.7;
+    color: #b0bac8;
+  }
+
+  .callout b { color: var(--accent); }
+
+  /* PILL LIST */
+  .pill-list { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .pill {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 3px 12px;
+    font-size: 0.75rem;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--text);
+  }
+
+  /* INLINE CODE */
+  .ic {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--accent);
+  }
+
+  p { line-height: 1.7; font-size: 0.85rem; color: #b0bac8; }
+  ul { padding-left: 18px; margin-top: 8px; }
+  li { font-size: 0.82rem; line-height: 1.8; color: #b0bac8; }
+  li b { color: var(--text); }
+
+  @media (max-width: 768px) {
+    header, nav, .tab-content { padding-left: 16px; padding-right: 16px; }
+    .grid-2, .grid-3 { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>⚡ Backend Vizsga Cheat Sheet</h1>
+  <p>// PHP · MySQL · JavaScript · CSS · Algoritmusok · Adattípusok</p>
+</header>
+
+<nav>
+  <button class="tab-btn active" data-tab="sql" style="--active-color: var(--accent-sql)">🗄 SQL</button>
+  <button class="tab-btn" data-tab="php" style="--active-color: var(--accent-php)">🐘 PHP</button>
+  <button class="tab-btn" data-tab="js" style="--active-color: var(--accent-js)">✦ JavaScript</button>
+  <button class="tab-btn" data-tab="css" style="--active-color: var(--accent-css)">🎨 CSS</button>
+  <button class="tab-btn" data-tab="programozas" style="--active-color: var(--accent-gen)">🧱 Programozás</button>
+  <button class="tab-btn" data-tab="ciklusok" style="--active-color: var(--accent-gen)">🔁 Ciklusok</button>
+  <button class="tab-btn" data-tab="adattipusok" style="--active-color: var(--accent-algo)">📦 Adattípusok</button>
+  <button class="tab-btn" data-tab="algoritmusok" style="--active-color: var(--accent-algo)">⚙ Algoritmusok</button>
+  <button class="tab-btn" data-tab="validalas" style="--active-color: var(--accent-css)">🛡 Validálás</button>
+</nav>
+
+<!-- ==================== SQL ==================== -->
+<div class="tab-content active" id="tab-sql" style="--accent: var(--accent-sql)">
+
+  <div class="section">
+    <div class="section-title">CRUD műveletek</div>
+    <div class="grid grid-2">
+      <div class="card">
+        <h3>SELECT</h3>
+<pre><span class="kw">SELECT</span> oszlop1, oszlop2
+<span class="kw">FROM</span> tabla
+<span class="kw">WHERE</span> feltétel
+<span class="kw">ORDER BY</span> oszlop <span class="kw">ASC</span>|<span class="kw">DESC</span>
+<span class="kw">LIMIT</span> <span class="num">10</span>;
+
+<span class="cmt">-- Minden oszlop:</span>
+<span class="kw">SELECT</span> <span class="op">*</span> <span class="kw">FROM</span> tabla;
+
+<span class="cmt">-- DISTINCT (egyedi értékek):</span>
+<span class="kw">SELECT DISTINCT</span> varos <span class="kw">FROM</span> ugyfelek;</pre>
+      </div>
+      <div class="card">
+        <h3>INSERT</h3>
+<pre><span class="cmt">-- Megadott oszlopokba:</span>
+<span class="kw">INSERT INTO</span> tabla (oszlop1, oszlop2)
+<span class="kw">VALUES</span> (<span class="str">'érték1'</span>, <span class="num">42</span>);
+
+<span class="cmt">-- Több sor egyszerre:</span>
+<span class="kw">INSERT INTO</span> tabla (nev, kor)
+<span class="kw">VALUES</span>
+  (<span class="str">'Anna'</span>, <span class="num">25</span>),
+  (<span class="str">'Béla'</span>, <span class="num">30</span>);</pre>
+      </div>
+      <div class="card">
+        <h3>UPDATE</h3>
+<pre><span class="kw">UPDATE</span> tabla
+<span class="kw">SET</span> oszlop1 <span class="op">=</span> <span class="str">'új érték'</span>,
+    oszlop2 <span class="op">=</span> <span class="num">99</span>
+<span class="kw">WHERE</span> id <span class="op">=</span> <span class="num">5</span>;
+
+<span class="cmt">-- ⚠ WHERE nélkül MINDEN sort frissít!</span></pre>
+      </div>
+      <div class="card">
+        <h3>DELETE</h3>
+<pre><span class="kw">DELETE FROM</span> tabla
+<span class="kw">WHERE</span> id <span class="op">=</span> <span class="num">5</span>;
+
+<span class="cmt">-- ⚠ WHERE nélkül az egész tábla törlődik!</span>
+
+<span class="cmt">-- Tábla kiürítése (gyorsabb):</span>
+<span class="kw">TRUNCATE TABLE</span> tabla;</pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">WHERE feltételek és operátorok</div>
+    <div class="grid grid-2">
+      <div class="card">
+        <h3>Összehasonlítás és logika</h3>
+<pre><span class="kw">WHERE</span> kor <span class="op">=</span> <span class="num">25</span>
+<span class="kw">WHERE</span> kor <span class="op">!=</span> <span class="num">25</span>   <span class="cmt">-- vagy &lt;&gt;</span>
+<span class="kw">WHERE</span> kor <span class="op">&gt;</span> <span class="num">18</span> <span class="kw">AND</span> kor <span class="op">&lt;</span> <span class="num">65</span>
+<span class="kw">WHERE</span> varos <span class="op">=</span> <span class="str">'Bp'</span> <span class="kw">OR</span> varos <span class="op">=</span> <span class="str">'Pécs'</span>
+<span class="kw">WHERE NOT</span> aktiv <span class="op">=</span> <span class="num">1</span></pre>
+      </div>
+      <div class="card">
+        <h3>Speciális feltételek</h3>
+<pre><span class="kw">WHERE</span> kor <span class="kw">BETWEEN</span> <span class="num">18</span> <span class="kw">AND</span> <span class="num">65</span>
+<span class="kw">WHERE</span> varos <span class="kw">IN</span> (<span class="str">'Bp'</span>, <span class="str">'Pécs'</span>, <span class="str">'Győr'</span>)
+<span class="kw">WHERE</span> nev <span class="kw">LIKE</span> <span class="str">'Kov%'</span>   <span class="cmt">-- % = bármennyi kar.</span>
+<span class="kw">WHERE</span> nev <span class="kw">LIKE</span> <span class="str">'K_r'</span>    <span class="cmt">-- _ = 1 karakter</span>
+<span class="kw">WHERE</span> email <span class="kw">IS NULL</span>
+<span class="kw">WHERE</span> email <span class="kw">IS NOT NULL</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">JOIN lekérdezések</div>
+    <div class="grid grid-2">
+      <div class="card">
+        <h3>INNER JOIN — csak egyező sorok</h3>
+<pre><span class="kw">SELECT</span> r.rendeles_id, u.nev, t.nev <span class="kw">AS</span> termek
+<span class="kw">FROM</span> rendelesek r
+<span class="kw">INNER JOIN</span> ugyfelek u
+  <span class="kw">ON</span> r.ugyfek_id <span class="op">=</span> u.id
+<span class="kw">INNER JOIN</span> termekek t
+  <span class="kw">ON</span> r.termek_id <span class="op">=</span> t.id;
+
+<span class="cmt">-- Csak azok jelennek meg ahol MINDKÉT
+-- oldalon van egyező sor.</span></pre>
+      </div>
+      <div class="card">
+        <h3>LEFT JOIN — bal tábla összes sora</h3>
+<pre><span class="kw">SELECT</span> u.nev, r.rendeles_id
+<span class="kw">FROM</span> ugyfelek u
+<span class="kw">LEFT JOIN</span> rendelesek r
+  <span class="kw">ON</span> u.id <span class="op">=</span> r.ugyfek_id;
+
+<span class="cmt">-- Ha az ügyfélnek nincs rendelése,
+-- r.rendeles_id = NULL lesz.
+-- Bal tábla (ugyfelek) MINDIG megjelenik.</span></pre>
+      </div>
+      <div class="card">
+        <h3>Aggregáció + GROUP BY</h3>
+<pre><span class="kw">SELECT</span> u.nev,
+       <span class="fn">COUNT</span>(r.id) <span class="kw">AS</span> rendeles_db,
+       <span class="fn">SUM</span>(r.osszeg) <span class="kw">AS</span> total
+<span class="kw">FROM</span> ugyfelek u
+<span class="kw">LEFT JOIN</span> rendelesek r <span class="kw">ON</span> u.id <span class="op">=</span> r.ugyfek_id
+<span class="kw">GROUP BY</span> u.id, u.nev
+<span class="kw">HAVING</span> <span class="fn">COUNT</span>(r.id) <span class="op">&gt;</span> <span class="num">2</span>
+<span class="kw">ORDER BY</span> total <span class="kw">DESC</span>;</pre>
+        <div class="callout"><b>HAVING</b> = GROUP BY utáni szűrés (mint WHERE, de aggregált értékre)</div>
+      </div>
+      <div class="card">
+        <h3>Aggregáló függvények</h3>
+        <table class="tbl">
+          <tr><th>Függvény</th><th>Leírás</th></tr>
+          <tr><td>COUNT(*)</td><td>Sorok száma</td></tr>
+          <tr><td>COUNT(oszlop)</td><td>Nem NULL sorok száma</td></tr>
+          <tr><td>SUM(oszlop)</td><td>Összeg</td></tr>
+          <tr><td>AVG(oszlop)</td><td>Átlag</td></tr>
+          <tr><td>MIN(oszlop)</td><td>Legkisebb érték</td></tr>
+          <tr><td>MAX(oszlop)</td><td>Legnagyobb érték</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Subquery (allekérdezés)</div>
+    <div class="grid grid-2">
+      <div class="card">
+        <h3>WHERE-ben</h3>
+<pre><span class="cmt">-- Átlag feletti fizetésű alkalmazottak:</span>
+<span class="kw">SELECT</span> nev, fizetes
+<span class="kw">FROM</span> alkalmazottak
+<span class="kw">WHERE</span> fizetes <span class="op">&gt;</span> (
+  <span class="kw">SELECT AVG</span>(fizetes)
+  <span class="kw">FROM</span> alkalmazottak
+);
+
+<span class="cmt">-- IN-nel:</span>
+<span class="kw">SELECT</span> nev <span class="kw">FROM</span> ugyfelek
+<span class="kw">WHERE</span> id <span class="kw">IN</span> (
+  <span class="kw">SELECT</span> ugyfek_id <span class="kw">FROM</span> rendelesek
+  <span class="kw">WHERE</span> osszeg <span class="op">&gt;</span> <span class="num">10000</span>
+);</pre>
+      </div>
+      <div class="card">
+        <h3>FROM-ban (derived table)</h3>
+<pre><span class="cmt">-- Átlagot előbb kiszámol, aztán szűr:</span>
+<span class="kw">SELECT</span> nev, avg_fizetes
+<span class="kw">FROM</span> (
+  <span class="kw">SELECT</span> osztaly, <span class="fn">AVG</span>(fizetes) <span class="kw">AS</span> avg_fizetes
+  <span class="kw">FROM</span> alkalmazottak
+  <span class="kw">GROUP BY</span> osztaly
+) <span class="kw">AS</span> osztaly_atlag
+<span class="kw">WHERE</span> avg_fizetes <span class="op">&gt;</span> <span class="num">500000</span>;</pre>
+        <div class="callout">A FROM-ban lévő subquerynek <b>alias</b> kell (AS osztaly_atlag)</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">DDL – Tábla létrehozás</div>
+    <div class="card">
+<pre><span class="kw">CREATE TABLE</span> felhasznalok (
+  id       <span class="type">INT</span>          <span class="kw">AUTO_INCREMENT PRIMARY KEY</span>,
+  nev      <span class="type">VARCHAR</span>(<span class="num">100</span>) <span class="kw">NOT NULL</span>,
+  email    <span class="type">VARCHAR</span>(<span class="num">150</span>) <span class="kw">UNIQUE NOT NULL</span>,
+  kor      <span class="type">INT</span>          <span class="kw">DEFAULT</span> <span class="num">0</span>,
+  letrehozva <span class="type">TIMESTAMP</span>  <span class="kw">DEFAULT CURRENT_TIMESTAMP</span>,
+  aktiv    <span class="type">TINYINT</span>      <span class="kw">DEFAULT</span> <span class="num">1</span>
+);</pre>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== PHP ==================== -->
+<div class="tab-content" id="tab-php" style="--accent: var(--accent-php)">
+
+  <div class="section">
+    <div class="section-title">PHP alap szintaxis</div>
+    <div class="grid grid-2">
+      <div class="card">
+        <h3>Változók, típusok</h3>
+<pre><span class="op">&lt;?php</span>
+<span class="var">$szam</span>   <span class="op">=</span> <span class="num">42</span>;
+<span class="var">$szoveg</span> <span class="op">=</span> <span class="str">"Hello"</span>;
+<span class="var">$logikai</span> <span class="op">=</span> <span class="kw">true</span>;
+<span class="var">$tomb</span>   <span class="op">=</span> [<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>];
+
+<span class="cmt">// Típusellenőrzés:</span>
+<span class="fn">gettype</span>(<span class="var">$szam</span>);       <span class="cmt">// "integer"</span>
+<span class="fn">is_string</span>(<span class="var">$szoveg</span>);  <span class="cmt">// true</span>
+<span class="fn">isset</span>(<span class="var">$valtozo</span>);     <span class="cmt">// létezik-e?</span>
+<span class="fn">empty</span>(<span class="var">$valtozo</span>);     <span class="cmt">// üres-e?</span>
+<span class="op">?&gt;</span></pre>
+      </div>
+      <div class="card">
+        <h3>Sztring műveletek</h3>
+<pre><span class="fn">strlen</span>(<span class="var">$s</span>)           <span class="cmt">// hossz</span>
+<span class="fn">strtoupper</span>(<span class="var">$s</span>)       <span class="cmt">// NAGYBETŰ</span>
+<span class="fn">strtolower</span>(<span class="var">$s</span>)       <span class="cmt">// kisbetű</span>
+<span class="fn">trim</span>(<span class="var">$s</span>)             <span class="cmt">// szóközök le</span>
+<span class="fn">str_replace</span>(<span class="str">'a'</span>,<span class="str">'b'</span>,<span class="var">$s</span>) <span class="cmt">// csere</span>
+<span class="fn">strpos</span>(<span class="var">$s</span>, <span class="str">'x'</span>)      <span class="cmt">// pozíció / false</span>
+<span class="fn">substr</span>(<span class="var">$s</span>, <span class="num">0</span>, <span class="num">5</span>)      <span class="cmt">// részsztring</span>
+<span class="fn">explode</span>(<span class="str">','</span>, <span class="var">$s</span>)     <span class="cmt">// sztring → tömb</span>
+<span class="fn">implode</span>(<span class="str">','</span>, <span class="var">$tomb</span>)  <span class="cmt">// tömb → sztring</span>
+<span class="fn">htmlspecialchars</span>(<span class="var">$s</span>) <span class="cmt">// XSS védelem!</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">HTML Form + PHP feldolgozás</div>
+    <div class="grid grid-2">
+      <div class="card">
+        <h3>HTML Form</h3>
+<pre><span class="tag">&lt;form</span> <span class="attr">action=</span><span class="str">"feldolgoz.php"</span>
+      <span class="attr">method=</span><span class="str">"POST"</span><span class="tag">&gt;</span>
+
+  <span class="tag">&lt;input</span> <span class="attr">type=</span><span class="str">"text"</span>
+         <span class="attr">name=</span><span class="str">"nev"</span>
+         <span class="attr">placeholder=</span><span class="str">"Neved"</span><span class="tag">&gt;</span>
+
+  <span class="tag">&lt;input</span> <span class="attr">type=</span><span class="str">"email"</span>
+         <span class="attr">name=</span><span class="str">"email"</span><span class="tag">&gt;</span>
+
+  <span class="tag">&lt;select</span> <span class="attr">name=</span><span class="str">"varos"</span><span class="tag">&gt;</span>
+    <span class="tag">&lt;option</span> <span class="attr">value=</span><span class="str">"bp"</span><span class="tag">&gt;</span>Budapest<span class="tag">&lt;/option&gt;</span>
+  <span class="tag">&lt;/select&gt;</span>
+
+  <span class="tag">&lt;button</span> <span class="attr">type=</span><span class="str">"submit"</span><span class="tag">&gt;</span>Küld<span class="tag">&lt;/button&gt;</span>
+<span class="tag">&lt;/form&gt;</span></pre>
+      </div>
+      <div class="card">
+        <h3>PHP Feldolgozás</h3>
+<pre><span class="op">&lt;?php</span>
+<span class="kw">if</span> (<span class="var">$_SERVER</span>[<span class="str">'REQUEST_METHOD'</span>] <span class="op">===</span> <span class="str">'POST'</span>) {
+
+  <span class="cmt">// Adatok olvasása</span>
+  <span class="var">$nev</span>   <span class="op">=</span> <span class="fn">trim</span>(<span class="var">$_POST</span>[<span class="str">'nev'</span>]);
+  <span class="var">$email</span> <span class="op">=</span> <span class="fn">trim</span>(<span class="var">$_POST</span>[<span class="str">'email'</span>]);
+
+  <span class="cmt">// Sanitálás</span>
+  <span class="var">$nev</span> <span class="op">=</span> <span class="fn">htmlspecialchars</span>(<span class="var">$nev</span>);
+
+  <span class="cmt">// Validálás</span>
+  <span class="kw">if</span> (<span class="fn">empty</span>(<span class="var">$nev</span>)) {
+    <span class="kw">echo</span> <span class="str">"Kötelező mező!"</span>;
+  } <span class="kw">elseif</span> (<span class="op">!</span><span class="fn">filter_var</span>(<span class="var">$email</span>,
+             <span class="kw">FILTER_VALIDATE_EMAIL</span>)) {
+    <span class="kw">echo</span> <span class="str">"Hibás email!"</span>;
+  } <span class="kw">else</span> {
+    <span class="cmt">// Feldolgozás...</span>
+  }
+}
+<span class="op">?&gt;</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">PHP + MySQL (MySQLi)</div>
+    <div class="grid grid-2">
+      <div class="card">
+        <h3>Kapcsolat és lekérdezés</h3>
+<pre><span class="op">&lt;?php</span>
+<span class="cmt">// Kapcsolat</span>
+<span class="var">$conn</span> <span class="op">=</span> <span class="kw">new</span> <span class="fn">mysqli</span>(
+  <span class="str">'localhost'</span>, <span class="cmt">// host</span>
+  <span class="str">'root'</span>,      <span class="cmt">// user</span>
+  <span class="str">''</span>,          <span class="cmt">// jelszo</span>
+  <span class="str">'adatbazis'</span>  <span class="cmt">// db neve</span>
+);
+
+<span class="kw">if</span> (<span class="var">$conn</span><span class="op">-&gt;</span>connect_error) {
+  <span class="fn">die</span>(<span class="str">"Kapcsolat hiba: "</span> <span class="op">.</span>
+      <span class="var">$conn</span><span class="op">-&gt;</span>connect_error);
+}
+
+<span class="cmt">// Egyszerű lekérdezés</span>
+<span class="var">$sql</span> <span class="op">=</span> <span class="str">"SELECT * FROM felhasznalok"</span>;
+<span class="var">$result</span> <span class="op">=</span> <span class="var">$conn</span><span class="op">-&gt;</span><span class="fn">query</span>(<span class="var">$sql</span>);
+
+<span class="kw">while</span> (<span class="var">$sor</span> <span class="op">=</span> <span class="var">$result</span><span class="op">-&gt;</span><span class="fn">fetch_assoc</span>()) {
+  <span class="kw">echo</span> <span class="var">$sor</span>[<span class="str">'nev'</span>] <span class="op">.</span> <span class="str">"&lt;br&gt;"</span>;
+}
+<span class="op">?&gt;</span></pre>
+      </div>
+      <div class="card">
+        <h3>Prepared Statement (⚠ SQL injection ellen!)</h3>
+<pre><span class="op">&lt;?php</span>
+<span class="cmt">// ? = placeholder</span>
+<span class="var">$stmt</span> <span class="op">=</span> <span class="var">$conn</span><span class="op">-&gt;</span><span class="fn">prepare</span>(
+  <span class="str">"INSERT INTO felhasznalok
+   (nev, email) VALUES (?, ?)"</span>
+);
+
+<span class="cmt">// i=int, s=string, d=double, b=blob</span>
+<span class="var">$stmt</span><span class="op">-&gt;</span><span class="fn">bind_param</span>(<span class="str">"ss"</span>, <span class="var">$nev</span>, <span class="var">$email</span>);
+<span class="var">$stmt</span><span class="op">-&gt;</span><span class="fn">execute</span>();
+<span class="var">$stmt</span><span class="op">-&gt;</span><span class="fn">close</span>();
+
+<span class="cmt">// SELECT prepared statement:</span>
+<span class="var">$stmt</span> <span class="op">=</span> <span class="var">$conn</span><span class="op">-&gt;</span><span class="fn">prepare</span>(
+  <span class="str">"SELECT * FROM felhasznalok
+   WHERE id = ?"</span>
+);
+<span class="var">$stmt</span><span class="op">-&gt;</span><span class="fn">bind_param</span>(<span class="str">"i"</span>, <span class="var">$id</span>);
+<span class="var">$stmt</span><span class="op">-&gt;</span><span class="fn">execute</span>();
+<span class="var">$result</span> <span class="op">=</span> <span class="var">$stmt</span><span class="op">-&gt;</span><span class="fn">get_result</span>();
+<span class="var">$sor</span> <span class="op">=</span> <span class="var">$result</span><span class="op">-&gt;</span><span class="fn">fetch_assoc</span>();
+<span class="op">?&gt;</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Adatkiírás adatbázisból HTML táblába</div>
+    <div class="card">
+<pre><span class="tag">&lt;table&gt;</span>
+  <span class="tag">&lt;tr&gt;&lt;th&gt;</span>ID<span class="tag">&lt;/th&gt;&lt;th&gt;</span>Név<span class="tag">&lt;/th&gt;&lt;th&gt;</span>Email<span class="tag">&lt;/th&gt;&lt;/tr&gt;</span>
+  <span class="op">&lt;?php</span>
+  <span class="var">$sql</span> <span class="op">=</span> <span class="str">"SELECT id, nev, email FROM felhasznalok ORDER BY nev"</span>;
+  <span class="var">$result</span> <span class="op">=</span> <span class="var">$conn</span><span class="op">-&gt;</span><span class="fn">query</span>(<span class="var">$sql</span>);
+
+  <span class="kw">if</span> (<span class="var">$result</span><span class="op">-&gt;</span>num_rows <span class="op">&gt;</span> <span class="num">0</span>) {
+    <span class="kw">while</span> (<span class="var">$row</span> <span class="op">=</span> <span class="var">$result</span><span class="op">-&gt;</span><span class="fn">fetch_assoc</span>()) {
+      <span class="kw">echo</span> <span class="str">"&lt;tr&gt;
+        &lt;td&gt;"</span> <span class="op">.</span> <span class="var">$row</span>[<span class="str">'id'</span>] <span class="op">.</span>    <span class="str">"&lt;/td&gt;
+        &lt;td&gt;"</span> <span class="op">.</span> <span class="fn">htmlspecialchars</span>(<span class="var">$row</span>[<span class="str">'nev'</span>]) <span class="op">.</span> <span class="str">"&lt;/td&gt;
+        &lt;td&gt;"</span> <span class="op">.</span> <span class="fn">htmlspecialchars</span>(<span class="var">$row</span>[<span class="str">'email'</span>]) <span class="op">.</span> <span class="str">"&lt;/td&gt;
+      &lt;/tr&gt;"</span>;
+    }
+  } <span class="kw">else</span> {
+    <span class="kw">echo</span> <span class="str">"&lt;tr&gt;&lt;td colspan='3'&gt;Nincs adat&lt;/td&gt;&lt;/tr&gt;"</span>;
+  }
+  <span class="op">?&gt;</span>
+<span class="tag">&lt;/table&gt;</span></pre>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">GET paraméterezés + URL</div>
+    <div class="grid grid-2">
+      <div class="card">
+        <h3>GET paraméter olvasás</h3>
+<pre><span class="cmt">// URL: oldal.php?id=5&amp;tipus=termek</span>
+<span class="op">&lt;?php</span>
+<span class="var">$id</span>    <span class="op">=</span> (int)<span class="var">$_GET</span>[<span class="str">'id'</span>];     <span class="cmt">// int cast!</span>
+<span class="var">$tipus</span> <span class="op">=</span> <span class="var">$_GET</span>[<span class="str">'tipus'</span>] <span class="op">??</span> <span class="str">''</span>; <span class="cmt">// null coalescing</span>
+
+<span class="kw">if</span> (<span class="fn">isset</span>(<span class="var">$_GET</span>[<span class="str">'id'</span>])) {
+  <span class="cmt">// létezik a paraméter</span>
+}
+<span class="op">?&gt;</span>
+
+<span class="cmt">// Link generálás:</span>
+<span class="tag">&lt;a</span> <span class="attr">href=</span><span class="str">"reszlet.php?id=&lt;?= $sor['id'] ?&gt;"</span><span class="tag">&gt;</span>
+  Részlet
+<span class="tag">&lt;/a&gt;</span></pre>
+      </div>
+      <div class="card">
+        <h3>Hasznos szuperglobálisok</h3>
+        <table class="tbl">
+          <tr><th>Változó</th><th>Mire való</th></tr>
+          <tr><td>$_GET</td><td>URL paraméterek</td></tr>
+          <tr><td>$_POST</td><td>Form POST adatok</td></tr>
+          <tr><td>$_REQUEST</td><td>GET + POST együtt</td></tr>
+          <tr><td>$_SESSION</td><td>Munkamenet adatok</td></tr>
+          <tr><td>$_COOKIE</td><td>Cookie értékek</td></tr>
+          <tr><td>$_SERVER</td><td>Szerver info (REQUEST_METHOD, stb.)</td></tr>
+          <tr><td>$_FILES</td><td>Feltöltött fájlok</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== JS ==================== -->
+<div class="tab-content" id="tab-js" style="--accent: var(--accent-js)">
+
+  <div class="section">
+    <div class="section-title">JS Alap szintaxis</div>
+    <div class="grid grid-2">
+      <div class="card">
+        <h3>Változók és típusok</h3>
+<pre><span class="kw">const</span> x <span class="op">=</span> <span class="num">10</span>;        <span class="cmt">// nem változhat</span>
+<span class="kw">let</span>   y <span class="op">=</span> <span class="str">"szöveg"</span>; <span class="cmt">// változhat</span>
+<span class="cmt">// var - kerülendő! (scope problémák)</span>
+
+<span class="fn">typeof</span> x;        <span class="cmt">// "number"</span>
+<span class="fn">typeof</span> <span class="str">"abc"</span>;   <span class="cmt">// "string"</span>
+<span class="fn">typeof</span> <span class="kw">true</span>;    <span class="cmt">// "boolean"</span>
+<span class="fn">typeof</span> <span class="kw">null</span>;    <span class="cmt">// "object" (ismert bug!)</span>
+<span class="fn">typeof</span> [];      <span class="cmt">// "object"</span>
+<span class="fn">Array.isArray</span>([]); <span class="cmt">// true</span></pre>
+      </div>
+      <div class="card">
+        <h3>Függvények</h3>
+<pre><span class="cmt">// Klasszikus:</span>
+<span class="kw">function</span> <span class="fn">osszead</span>(a, b) {
+  <span class="kw">return</span> a <span class="op">+</span> b;
+}
+
+<span class="cmt">// Arrow function:</span>
+<span class="kw">const</span> <span class="fn">osszead</span> <span class="op">=</span> (a, b) <span class="op">=&gt;</span> a <span class="op">+</span> b;
+
+<span class="cmt">// Default paraméter:</span>
+<span class="kw">const</span> <span class="fn">koszon</span> <span class="op">=</span> (nev <span class="op">=</span> <span class="str">"Világ"</span>) <span class="op">=&gt;</span>
+  <span class="str">`Helló, <span class="op">${</span>nev<span class="op">}</span>!`</span>;
+
+<span class="cmt">// Template literal: ` backtick `</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">DOM manipuláció</div>
+    <div class="grid grid-2">
+      <div class="card">
+        <h3>Elemek kijelölése</h3>
+<pre><span class="fn">document.getElementById</span>(<span class="str">'id'</span>)
+<span class="fn">document.querySelector</span>(<span class="str">'.osztaly'</span>)
+<span class="fn">document.querySelectorAll</span>(<span class="str">'p'</span>) <span class="cmt">// NodeList</span>
+<span class="fn">document.getElementsByClassName</span>(<span class="str">'x'</span>)
+
+<span class="cmt">// Tartalom módosítás:</span>
+elem.innerHTML <span class="op">=</span> <span class="str">"&lt;b&gt;Szöveg&lt;/b&gt;"</span>;
+elem.textContent <span class="op">=</span> <span class="str">"Biztonságos szöveg"</span>;
+elem.value <span class="op">=</span> <span class="str">"input értéke"</span>;
+
+<span class="cmt">// Stílus:</span>
+elem.style.color <span class="op">=</span> <span class="str">"red"</span>;
+elem.classList.<span class="fn">add</span>(<span class="str">"aktiv"</span>);
+elem.classList.<span class="fn">remove</span>(<span class="str">"aktiv"</span>);
+elem.classList.<span class="fn">toggle</span>(<span class="str">"aktiv"</span>);</pre>
+      </div>
+      <div class="card">
+        <h3>Events (eseménykezelők)</h3>
+<pre><span class="cmt">// Gomb kattintás:</span>
+<span class="kw">const</span> btn <span class="op">=</span> <span class="fn">document.getElementById</span>(<span class="str">'btn'</span>);
+btn.<span class="fn">addEventListener</span>(<span class="str">'click'</span>, <span class="kw">function</span>() {
+  <span class="fn">alert</span>(<span class="str">'Kattintva!'</span>);
+});
+
+<span class="cmt">// Form submit:</span>
+form.<span class="fn">addEventListener</span>(<span class="str">'submit'</span>, (e) <span class="op">=&gt;</span> {
+  e.<span class="fn">preventDefault</span>(); <span class="cmt">// ne töltse újra</span>
+  <span class="kw">const</span> nev <span class="op">=</span> <span class="fn">document.getElementById</span>(<span class="str">'nev'</span>).value;
+});
+
+<span class="cmt">// Input változás:</span>
+input.<span class="fn">addEventListener</span>(<span class="str">'input'</span>, (e) <span class="op">=&gt;</span> {
+  <span class="fn">console.log</span>(e.target.value);
+});</pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Tömb műveletek</div>
+    <div class="card">
+<pre><span class="kw">const</span> szamok <span class="op">=</span> [<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>, <span class="num">4</span>, <span class="num">5</span>];
+
+szamok.<span class="fn">push</span>(<span class="num">6</span>);                              <span class="cmt">// végére</span>
+szamok.<span class="fn">pop</span>();                                <span class="cmt">// végéről kivesz</span>
+szamok.<span class="fn">unshift</span>(<span class="num">0</span>);                          <span class="cmt">// elejére</span>
+szamok.<span class="fn">shift</span>();                              <span class="cmt">// elejéről kivesz</span>
+szamok.<span class="fn">slice</span>(<span class="num">1</span>, <span class="num">3</span>);                         <span class="cmt">// [2,3] (nem módosít)</span>
+szamok.<span class="fn">splice</span>(<span class="num">1</span>, <span class="num">2</span>);                        <span class="cmt">// töröl index 1-től 2-t</span>
+szamok.<span class="fn">indexOf</span>(<span class="num">3</span>);                          <span class="cmt">// 2 (index)</span>
+szamok.<span class="fn">includes</span>(<span class="num">3</span>);                         <span class="cmt">// true</span>
+szamok.<span class="fn">join</span>(<span class="str">', '</span>);                          <span class="cmt">// "1, 2, 3..."</span>
+szamok.<span class="fn">reverse</span>();                            <span class="cmt">// megfordít</span>
+szamok.<span class="fn">sort</span>((a, b) <span class="op">=&gt;</span> a <span class="op">-</span> b);             <span class="cmt">// növekvő sorrend</span>
+
+<span class="cmt">// Funkcionális:</span>
+szamok.<span class="fn">map</span>(x <span class="op">=&gt;</span> x <span class="op">*</span> <span class="num">2</span>);                    <span class="cmt">// [2,4,6,8,10]</span>
+szamok.<span class="fn">filter</span>(x <span class="op">=&gt;</span> x <span class="op">&gt;</span> <span class="num">3</span>);               <span class="cmt">// [4,5]</span>
+szamok.<span class="fn">reduce</span>((acc, x) <span class="op">=&gt;</span> acc <span class="op">+</span> x, <span class="num">0</span>); <span class="cmt">// 15</span>
+szamok.<span class="fn">find</span>(x <span class="op">=&gt;</span> x <span class="op">&gt;</span> <span class="num">3</span>);                 <span class="cmt">// 4 (első találat)</span>
+szamok.<span class="fn">forEach</span>(x <span class="op">=&gt;</span> <span class="fn">console.log</span>(x));    <span class="cmt">// minden elemen</span></pre>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== CSS ==================== -->
+<div class="tab-content" id="tab-css" style="--accent: var(--accent-css)">
+
+  <div class="section">
+    <div class="section-title">Középre igazítás – minden módszer</div>
+    <div class="grid grid-2">
+      <div class="card">
+        <h3>Flexbox – legegyszerűbb</h3>
+<pre><span class="cmt">/* Vízszintes + Függőleges közép */</span>
+.szulo {
+  <span class="attr">display</span>: <span class="str">flex</span>;
+  <span class="attr">justify-content</span>: <span class="str">center</span>; <span class="cmt">/* vízszintes */</span>
+  <span class="attr">align-items</span>: <span class="str">center</span>;    <span class="cmt">/* függőleges */</span>
+  <span class="attr">height</span>: <span class="str">100vh</span>;          <span class="cmt">/* teljes magasság */</span>
+}
+
+<span class="cmt">/* Csak vízszintes közép (flex-row) */</span>
+.szulo {
+  <span class="attr">display</span>: <span class="str">flex</span>;
+  <span class="attr">justify-content</span>: <span class="str">center</span>;
+}
+
+<span class="cmt">/* Gap elemek között: */</span>
+.szulo { <span class="attr">gap</span>: <span class="str">16px</span>; }</pre>
+      </div>
+      <div class="card">
+        <h3>Grid – 2D elrendezés</h3>
+<pre><span class="cmt">/* Rácsos elrendezés */</span>
+.szulo {
+  <span class="attr">display</span>: <span class="str">grid</span>;
+  <span class="attr">place-items</span>: <span class="str">center</span>; <span class="cmt">/* mindkét irány */</span>
+  <span class="attr">height</span>: <span class="str">100vh</span>;
+}
+
+<span class="cmt">/* 3 egyforma oszlop: */</span>
+.szulo {
+  <span class="attr">display</span>: <span class="str">grid</span>;
+  <span class="attr">grid-template-columns</span>: <span class="str">repeat(3, 1fr)</span>;
+  <span class="attr">gap</span>: <span class="str">20px</span>;
+}
+
+<span class="cmt">/* Reszponzív rács: */</span>
+.szulo {
+  <span class="attr">grid-template-columns</span>:
+    <span class="fn">repeat</span>(<span class="fn">auto-fit</span>, <span class="fn">minmax</span>(<span class="num">200px</span>, <span class="num">1fr</span>));
+}</pre>
+      </div>
+      <div class="card">
+        <h3>Position: absolute közép</h3>
+<pre><span class="cmt">/* Szülő: */</span>
+.szulo { <span class="attr">position</span>: <span class="str">relative</span>; }
+
+<span class="cmt">/* Gyerek: */</span>
+.gyerek {
+  <span class="attr">position</span>: <span class="str">absolute</span>;
+  <span class="attr">top</span>: <span class="str">50%</span>;
+  <span class="attr">left</span>: <span class="str">50%</span>;
+  <span class="attr">transform</span>: <span class="fn">translate</span>(<span class="str">-50%, -50%</span>);
+}</pre>
+      </div>
+      <div class="card">
+        <h3>Szöveg + Block közép</h3>
+<pre><span class="cmt">/* Szöveg vízszintes közép: */</span>
+p { <span class="attr">text-align</span>: <span class="str">center</span>; }
+
+<span class="cmt">/* Block elem (div) vízszintes közép: */</span>
+.doboz {
+  <span class="attr">width</span>: <span class="str">300px</span>;
+  <span class="attr">margin</span>: <span class="str">0 auto</span>;
+}
+
+<span class="cmt">/* Inline / szöveg függőleges közép: */</span>
+.szulo {
+  <span class="attr">line-height</span>: <span class="str">50px</span>; <span class="cmt">/* = magasság</span>
+}</pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Box Model és elrendezés</div>
+    <div class="grid grid-2">
+      <div class="card">
+        <h3>Box Model</h3>
+<pre>.elem {
+  <span class="attr">width</span>: <span class="str">300px</span>;
+  <span class="attr">height</span>: <span class="str">200px</span>;
+
+  <span class="attr">padding</span>: <span class="str">10px 20px</span>;   <span class="cmt">/* belső tér */</span>
+  <span class="attr">border</span>: <span class="str">2px solid red</span>;
+  <span class="attr">margin</span>: <span class="str">16px auto</span>;    <span class="cmt">/* külső tér */</span>
+
+  <span class="cmt">/* Padding ne növelje a méretet: */</span>
+  <span class="attr">box-sizing</span>: <span class="str">border-box</span>;
+}</pre>
+        <div class="callout">Mindig add hozzá: <b>* { box-sizing: border-box; }</b> a CSS elejéhez!</div>
+      </div>
+      <div class="card">
+        <h3>Pozícionálás</h3>
+        <table class="tbl">
+          <tr><th>Érték</th><th>Viselkedés</th></tr>
+          <tr><td>static</td><td>Alapértelmezett, normal flow</td></tr>
+          <tr><td>relative</td><td>Saját pozíciójához képest tolható</td></tr>
+          <tr><td>absolute</td><td>Legközelebbi relative szülőhöz</td></tr>
+          <tr><td>fixed</td><td>Viewporthoz rögzített</td></tr>
+          <tr><td>sticky</td><td>Scrollnál rögzül (top: 0)</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Display értékek és Responsive</div>
+    <div class="grid grid-2">
+      <div class="card">
+        <h3>Display</h3>
+<pre><span class="attr">display</span>: <span class="str">block</span>;        <span class="cmt">/* teljes sor */</span>
+<span class="attr">display</span>: <span class="str">inline</span>;       <span class="cmt">/* sorban, nem méretezhető */</span>
+<span class="attr">display</span>: <span class="str">inline-block</span>; <span class="cmt">/* sorban, méretezhető */</span>
+<span class="attr">display</span>: <span class="str">none</span>;         <span class="cmt">/* rejtett, hely sem kell */</span>
+<span class="attr">visibility</span>: <span class="str">hidden</span>;   <span class="cmt">/* rejtett, hely megmarad */</span>
+<span class="attr">display</span>: <span class="str">flex</span>;         <span class="cmt">/* Flexbox konténer */</span>
+<span class="attr">display</span>: <span class="str">grid</span>;         <span class="cmt">/* Grid konténer */</span></pre>
+      </div>
+      <div class="card">
+        <h3>Media Query</h3>
+<pre><span class="cmt">/* Mobil-első megközelítés: */</span>
+.container { <span class="attr">width</span>: <span class="str">100%</span>; }
+
+<span class="op">@media</span> (<span class="attr">min-width</span>: <span class="str">768px</span>) {
+  .container { <span class="attr">width</span>: <span class="str">750px</span>; }
+}
+
+<span class="op">@media</span> (<span class="attr">min-width</span>: <span class="str">1024px</span>) {
+  .container { <span class="attr">width</span>: <span class="str">960px</span>; }
+}
+
+<span class="cmt">/* max-width = desktop-első: */</span>
+<span class="op">@media</span> (<span class="attr">max-width</span>: <span class="str">600px</span>) {
+  nav { <span class="attr">display</span>: <span class="str">none</span>; }
+}</pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== PROGRAMOZÁS ==================== -->
+<div class="tab-content" id="tab-programozas" style="--accent: var(--accent-gen)">
+
+  <div class="section">
+    <div class="section-title">Programozás alappillérek</div>
+    <div class="grid grid-2">
+      <div class="card">
+        <h3>Változó</h3>
+        <p>Egy névvel ellátott <b>memóriacím</b>, amely értéket tárol. A változó típusa meghatározza, milyen adatot tárolhat és mennyi memóriát foglal.</p>
+        <div class="callout"><b>Statikus típusos</b> (C#, Java): típust fordításkor rögzítjük<br><b>Dinamikus típusos</b> (PHP, JS, Python): típus futásidőben dől el</div>
+      </div>
+      <div class="card">
+        <h3>Elágazás (feltétel)</h3>
+<pre><span class="cmt">// Ha-akkor-különben logika</span>
+<span class="kw">if</span> (feltétel) {
+  <span class="cmt">// igaz ág</span>
+} <span class="kw">else if</span> (masik_feltetel) {
+  <span class="cmt">// második ág</span>
+} <span class="kw">else</span> {
+  <span class="cmt">// hamis ág</span>
+}
+
+<span class="cmt">// Ternary (egysoros):</span>
+<span class="kw">let</span> eredm <span class="op">=</span> x <span class="op">&gt;</span> <span class="num">0</span> <span class="op">?</span> <span class="str">"pozitív"</span> <span class="op">:</span> <span class="str">"nem pozitív"</span>;</pre>
+      </div>
+      <div class="card">
+        <h3>Függvény</h3>
+        <p>Újrafelhasználható kódblokk, amely <b>paramétert</b> fogadhat és <b>értéket adhat vissza</b>. Segít a kód ismétlések elkerülésében (DRY elv).</p>
+        <div class="pill-list">
+          <span class="pill">DRY – Don't Repeat Yourself</span>
+          <span class="pill">Egy felelősség</span>
+          <span class="pill">Bemeneti paraméterek</span>
+          <span class="pill">Return érték</span>
+        </div>
+      </div>
+      <div class="card">
+        <h3>OOP alappillérek</h3>
+        <table class="tbl">
+          <tr><th>Fogalom</th><th>Mit jelent</th></tr>
+          <tr><td>Osztály</td><td>Tervrajz / sablon az objektumhoz</td></tr>
+          <tr><td>Objektum</td><td>Osztály egy példánya</td></tr>
+          <tr><td>Öröklés</td><td>Szülő tulajdonságait átveszi</td></tr>
+          <tr><td>Egységbezárás</td><td>Adatok elrejtése (private/public)</td></tr>
+          <tr><td>Polimorfizmus</td><td>Ugyanaz a metódus más viselkedéssel</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Switch-case</div>
+    <div class="card">
+<pre><span class="kw">switch</span> (<span class="var">$nap</span>) {                 <span class="cmt">// PHP</span>
+  <span class="kw">case</span> <span class="num">1</span>: <span class="kw">echo</span> <span class="str">"Hétfő"</span>;   <span class="kw">break</span>;
+  <span class="kw">case</span> <span class="num">2</span>: <span class="kw">echo</span> <span class="str">"Kedd"</span>;    <span class="kw">break</span>;
+  <span class="kw">case</span> <span class="num">6</span>:
+  <span class="kw">case</span> <span class="num">7</span>: <span class="kw">echo</span> <span class="str">"Hétvége"</span>; <span class="kw">break</span>; <span class="cmt">// több case → együtt</span>
+  <span class="kw">default</span>: <span class="kw">echo</span> <span class="str">"Egyéb"</span>;
+}
+
+<span class="cmt">// ⚠ break nélkül "fall-through" – az összes rákövetkező ág is lefut!</span></pre>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== CIKLUSOK ==================== -->
+<div class="tab-content" id="tab-ciklusok" style="--accent: var(--accent-gen)">
+
+  <div class="section">
+    <div class="section-title">Ciklusok elmélete</div>
+    <div class="grid grid-3">
+      <div class="card">
+        <h3>for ciklus</h3>
+        <p><b>Mikor használd:</b> ha pontosan tudod, hányszor kell ismételni.</p>
+<pre><span class="kw">for</span> (<span class="kw">let</span> i <span class="op">=</span> <span class="num">0</span>; i <span class="op">&lt;</span> <span class="num">5</span>; i<span class="op">++</span>) {
+  <span class="fn">console.log</span>(i);
+}</pre>
+        <div class="callout">Init; feltétel; léptetés<br>Ha feltétel <b>hamis</b> → kilép</div>
+      </div>
+      <div class="card">
+        <h3>while ciklus</h3>
+        <p><b>Mikor használd:</b> ha nem tudod előre a lépésszámot, csak a kilépési feltételt.</p>
+<pre><span class="kw">let</span> i <span class="op">=</span> <span class="num">0</span>;
+<span class="kw">while</span> (i <span class="op">&lt;</span> <span class="num">5</span>) {
+  <span class="fn">console.log</span>(i);
+  i<span class="op">++</span>;
+}</pre>
+        <div class="callout">Előfeltételes: ha feltétel eleve hamis, a ciklus <b>0-szor</b> fut le</div>
+      </div>
+      <div class="card">
+        <h3>do-while ciklus</h3>
+        <p><b>Mikor használd:</b> ha legalább egyszer le kell futni a ciklusmagnak.</p>
+<pre><span class="kw">let</span> i <span class="op">=</span> <span class="num">0</span>;
+<span class="kw">do</span> {
+  <span class="fn">console.log</span>(i);
+  i<span class="op">++</span>;
+} <span class="kw">while</span> (i <span class="op">&lt;</span> <span class="num">5</span>);
+</pre>
+        <div class="callout">Utófeltételes: <b>mindig</b> legalább egyszer lefut</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Tömbök bejárása</div>
+    <div class="grid grid-2">
+      <div class="card">
+        <h3>PHP – foreach</h3>
+<pre><span class="var">$nevek</span> <span class="op">=</span> [<span class="str">'Anna'</span>, <span class="str">'Béla'</span>, <span class="str">'Csaba'</span>];
+
+<span class="cmt">// Csak értékek:</span>
+<span class="kw">foreach</span> (<span class="var">$nevek</span> <span class="kw">as</span> <span class="var">$nev</span>) {
+  <span class="kw">echo</span> <span class="var">$nev</span> <span class="op">.</span> <span class="str">"&lt;br&gt;"</span>;
+}
+
+<span class="cmt">// Asszociatív tömb (kulcs-érték):</span>
+<span class="var">$szemely</span> <span class="op">=</span> [<span class="str">'nev'</span> <span class="op">=&gt;</span> <span class="str">'Anna'</span>, <span class="str">'kor'</span> <span class="op">=&gt;</span> <span class="num">25</span>];
+<span class="kw">foreach</span> (<span class="var">$szemely</span> <span class="kw">as</span> <span class="var">$kulcs</span> <span class="op">=&gt;</span> <span class="var">$ertek</span>) {
+  <span class="kw">echo</span> <span class="str">"<span class="var">$kulcs</span>: <span class="var">$ertek</span>&lt;br&gt;"</span>;
+}</pre>
+      </div>
+      <div class="card">
+        <h3>JavaScript – tömbök</h3>
+<pre><span class="kw">const</span> nevek <span class="op">=</span> [<span class="str">'Anna'</span>, <span class="str">'Béla'</span>, <span class="str">'Csaba'</span>];
+
+<span class="cmt">// Klasszikus for:</span>
+<span class="kw">for</span> (<span class="kw">let</span> i <span class="op">=</span> <span class="num">0</span>; i <span class="op">&lt;</span> nevek.length; i<span class="op">++</span>) {
+  <span class="fn">console.log</span>(nevek[i]);
+}
+
+<span class="cmt">// for...of (érték):</span>
+<span class="kw">for</span> (<span class="kw">const</span> nev <span class="kw">of</span> nevek) {
+  <span class="fn">console.log</span>(nev);
+}
+
+<span class="cmt">// forEach:</span>
+nevek.<span class="fn">forEach</span>((nev, index) <span class="op">=&gt;</span> {
+  <span class="fn">console.log</span>(index, nev);
+});</pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">break és continue</div>
+    <div class="grid grid-2">
+      <div class="card">
+        <h3>break – kilép a ciklusból</h3>
+<pre><span class="kw">for</span> (<span class="kw">let</span> i <span class="op">=</span> <span class="num">0</span>; i <span class="op">&lt;</span> <span class="num">10</span>; i<span class="op">++</span>) {
+  <span class="kw">if</span> (i <span class="op">===</span> <span class="num">5</span>) <span class="kw">break</span>; <span class="cmt">// 5-nél kilép</span>
+  <span class="fn">console.log</span>(i); <span class="cmt">// 0,1,2,3,4</span>
+}</pre>
+      </div>
+      <div class="card">
+        <h3>continue – kihagyja az iterációt</h3>
+<pre><span class="kw">for</span> (<span class="kw">let</span> i <span class="op">=</span> <span class="num">0</span>; i <span class="op">&lt;</span> <span class="num">5</span>; i<span class="op">++</span>) {
+  <span class="kw">if</span> (i <span class="op">===</span> <span class="num">2</span>) <span class="kw">continue</span>; <span class="cmt">// 2-t kihagyja</span>
+  <span class="fn">console.log</span>(i); <span class="cmt">// 0,1,3,4</span>
+}</pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== ADATTÍPUSOK ==================== -->
+<div class="tab-content" id="tab-adattipusok" style="--accent: var(--accent-algo)">
+
+  <div class="section">
+    <div class="section-title">Primitív adattípusok</div>
+    <table class="tbl">
+      <tr><th>Típus</th><th>PHP</th><th>JS</th><th>Jellemző</th><th>Példa</th></tr>
+      <tr><td>Egész szám</td><td>int</td><td>Number</td><td>Tört nélküli szám, negatív is lehet</td><td>42, -7, 0</td></tr>
+      <tr><td>Lebegőpontos</td><td>float/double</td><td>Number</td><td>Tizedes tört; kerekítési hibák lehetnek</td><td>3.14, -0.5</td></tr>
+      <tr><td>Sztring</td><td>string</td><td>string</td><td>Karaktersorozat, idézőjelben</td><td>"alma", 'béka'</td></tr>
+      <tr><td>Logikai</td><td>bool</td><td>boolean</td><td>Csak igaz/hamis lehet</td><td>true, false</td></tr>
+      <tr><td>Null</td><td>null</td><td>null</td><td>Szándékos "nincs érték"</td><td>null</td></tr>
+      <tr><td>Undefined</td><td>–</td><td>undefined</td><td>Deklarált, de nem kapott értéket</td><td>undefined</td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Összetett adattípusok</div>
+    <div class="grid grid-2">
+      <div class="card">
+        <h3>Tömb (Array)</h3>
+        <p>Indexelt elemek sorozata. <b>0-tól</b> indexelt. Tárolhat vegyes típusokat is.</p>
+<pre><span class="cmt">// PHP:</span>
+<span class="var">$szamok</span> <span class="op">=</span> [<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>];
+<span class="var">$mixed</span>  <span class="op">=</span> [<span class="str">"alma"</span>, <span class="num">42</span>, <span class="kw">true</span>];
+
+<span class="cmt">// Asszociatív (kulcs-érték):</span>
+<span class="var">$szemely</span> <span class="op">=</span> [
+  <span class="str">'nev'</span> <span class="op">=&gt;</span> <span class="str">'Anna'</span>,
+  <span class="str">'kor'</span> <span class="op">=&gt;</span> <span class="num">25</span>
+];
+<span class="kw">echo</span> <span class="var">$szemely</span>[<span class="str">'nev'</span>]; <span class="cmt">// Anna</span></pre>
+      </div>
+      <div class="card">
+        <h3>Objektum (Object)</h3>
+        <p>Kulcs-érték párokat tárol. Metódusokat is tartalmazhat.</p>
+<pre><span class="cmt">// JavaScript:</span>
+<span class="kw">const</span> auto <span class="op">=</span> {
+  marka: <span class="str">"Toyota"</span>,
+  ev:    <span class="num">2022</span>,
+  indit: <span class="kw">function</span>() {
+    <span class="fn">console.log</span>(<span class="str">"Brumm!"</span>);
+  }
+};
+
+auto.marka;    <span class="cmt">// "Toyota"</span>
+auto[<span class="str">"ev"</span>];  <span class="cmt">// 2022</span>
+auto.<span class="fn">indit</span>(); <span class="cmt">// "Brumm!"</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Típuskonverzió (Type Casting)</div>
+    <div class="grid grid-2">
+      <div class="card">
+        <h3>PHP</h3>
+<pre><span class="cmt">// Explicit casting:</span>
+(int)<span class="str">"42abc"</span>    <span class="cmt">// 42</span>
+(float)<span class="str">"3.14"</span>  <span class="cmt">// 3.14</span>
+(string)<span class="num">42</span>     <span class="cmt">// "42"</span>
+(bool)<span class="num">0</span>         <span class="cmt">// false</span>
+(bool)<span class="num">1</span>         <span class="cmt">// true</span>
+(array)<span class="str">"alma"</span>  <span class="cmt">// ["alma"]</span>
+
+<span class="cmt">// Függvényekkel:</span>
+<span class="fn">intval</span>(<span class="str">"5.9"</span>)   <span class="cmt">// 5</span>
+<span class="fn">floatval</span>(<span class="str">"3.1"</span>) <span class="cmt">// 3.1</span>
+<span class="fn">strval</span>(<span class="num">99</span>)      <span class="cmt">// "99"</span></pre>
+      </div>
+      <div class="card">
+        <h3>JavaScript</h3>
+<pre><span class="cmt">// Sztringből szám:</span>
+<span class="fn">parseInt</span>(<span class="str">"42"</span>)    <span class="cmt">// 42</span>
+<span class="fn">parseFloat</span>(<span class="str">"3.14"</span>) <span class="cmt">// 3.14</span>
+<span class="fn">Number</span>(<span class="str">"42"</span>)      <span class="cmt">// 42</span>
+<span class="op">+</span><span class="str">"42"</span>             <span class="cmt">// 42 (unary plus)</span>
+
+<span class="cmt">// Számból sztring:</span>
+<span class="fn">String</span>(<span class="num">42</span>)        <span class="cmt">// "42"</span>
+(<span class="num">42</span>).toString()   <span class="cmt">// "42"</span>
+
+<span class="cmt">// Logikais konverzió:</span>
+<span class="fn">Boolean</span>(<span class="num">0</span>)        <span class="cmt">// false</span>
+<span class="fn">Boolean</span>(<span class="str">""</span>)       <span class="cmt">// false</span>
+<span class="fn">Boolean</span>(<span class="str">"alma"</span>)   <span class="cmt">// true</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Falsy értékek (ha feltételben hamis viselkednek)</div>
+    <div class="grid grid-2">
+      <div class="card">
+        <h3>PHP falsy értékek</h3>
+        <div class="pill-list">
+          <span class="pill">false</span>
+          <span class="pill">0</span>
+          <span class="pill">0.0</span>
+          <span class="pill">"" (üres sztring)</span>
+          <span class="pill">"0"</span>
+          <span class="pill">[] (üres tömb)</span>
+          <span class="pill">null</span>
+        </div>
+      </div>
+      <div class="card">
+        <h3>JS falsy értékek</h3>
+        <div class="pill-list">
+          <span class="pill">false</span>
+          <span class="pill">0</span>
+          <span class="pill">-0</span>
+          <span class="pill">"" (üres sztring)</span>
+          <span class="pill">null</span>
+          <span class="pill">undefined</span>
+          <span class="pill">NaN</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== ALGORITMUSOK ==================== -->
+<div class="tab-content" id="tab-algoritmusok" style="--accent: var(--accent-algo)">
+
+  <div class="section">
+    <div class="section-title">Algoritmus fogalma</div>
+    <div class="callout" style="margin-bottom:16px">
+      Az <b>algoritmus</b> egy feladat megoldásának lépéseinek végesen sok, egyértelmű, elvégezhető, determinisztikus utasítás sorozata. Bemeneti adatokból kimeneti adatokat állít elő.
+    </div>
+    <div class="grid grid-3">
+      <div class="card">
+        <h3>Jó algoritmus jellemzői</h3>
+        <ul>
+          <li><b>Végesség</b> – véges lépésben leáll</li>
+          <li><b>Meghatározottság</b> – minden lépés egyértelmű</li>
+          <li><b>Hatékonyság</b> – kevés erőforrással</li>
+          <li><b>Általánosság</b> – hasonló feladatokra is</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Komplexitás jelölés</h3>
+        <table class="tbl">
+          <tr><th>Jelölés</th><th>Neve</th><th>Példa</th></tr>
+          <tr><td>O(1)</td><td>Konstans</td><td>Tömb elem olvasás</td></tr>
+          <tr><td>O(log n)</td><td>Logaritmikus</td><td>Bináris keresés</td></tr>
+          <tr><td>O(n)</td><td>Lineáris</td><td>Lineáris keresés</td></tr>
+          <tr><td>O(n²)</td><td>Négyzetes</td><td>Buborékrendezés</td></tr>
+        </table>
+      </div>
+      <div class="card">
+        <h3>Algoritmus típusok</h3>
+        <ul>
+          <li><b>Keresés</b> – elem megtalálása</li>
+          <li><b>Rendezés</b> – sorrend kialakítása</li>
+          <li><b>Összesítés</b> – összeg, átlag, max/min</li>
+          <li><b>Rekurzió</b> – önmaga hívja magát</li>
+          <li><b>Szűrés</b> – feltételnek megfelelők</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Keresési algoritmusok</div>
+    <div class="grid grid-2">
+      <div class="card">
+        <h3>Lineáris keresés – O(n)</h3>
+        <p>Sorban végigmegyünk minden elemen. Rendezetlen tömbben is működik.</p>
+<pre><span class="kw">function</span> <span class="fn">linearisKeres</span>(tomb, cel) {
+  <span class="kw">for</span> (<span class="kw">let</span> i <span class="op">=</span> <span class="num">0</span>; i <span class="op">&lt;</span> tomb.length; i<span class="op">++</span>) {
+    <span class="kw">if</span> (tomb[i] <span class="op">===</span> cel) <span class="kw">return</span> i; <span class="cmt">// index</span>
+  }
+  <span class="kw">return</span> <span class="op">-</span><span class="num">1</span>; <span class="cmt">// nem találta</span>
+}</pre>
+      </div>
+      <div class="card">
+        <h3>Bináris keresés – O(log n)</h3>
+        <p>Csak <b>rendezett</b> tömbön! Felezi a keresési tartományt minden lépésben.</p>
+<pre><span class="kw">function</span> <span class="fn">binarisKeres</span>(tomb, cel) {
+  <span class="kw">let</span> bal <span class="op">=</span> <span class="num">0</span>, jobb <span class="op">=</span> tomb.length <span class="op">-</span> <span class="num">1</span>;
+  <span class="kw">while</span> (bal <span class="op">&lt;=</span> jobb) {
+    <span class="kw">let</span> kozep <span class="op">=</span> <span class="fn">Math.floor</span>((bal<span class="op">+</span>jobb)<span class="op">/</span><span class="num">2</span>);
+    <span class="kw">if</span> (tomb[kozep] <span class="op">===</span> cel)  <span class="kw">return</span> kozep;
+    <span class="kw">if</span> (tomb[kozep] <span class="op">&lt;</span> cel)   bal <span class="op">=</span> kozep <span class="op">+</span> <span class="num">1</span>;
+    <span class="kw">else</span>                        jobb <span class="op">=</span> kozep <span class="op">-</span> <span class="num">1</span>;
+  }
+  <span class="kw">return</span> <span class="op">-</span><span class="num">1</span>;
+}</pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Rendezési algoritmusok</div>
+    <div class="grid grid-2">
+      <div class="card">
+        <h3>Buborék rendezés – O(n²)</h3>
+        <p>Szomszédos elemeket hasonlít és cserél. Lassú, de egyszerű.</p>
+<pre><span class="kw">function</span> <span class="fn">buborekRendezes</span>(tomb) {
+  <span class="kw">let</span> n <span class="op">=</span> tomb.length;
+  <span class="kw">for</span> (<span class="kw">let</span> i <span class="op">=</span> <span class="num">0</span>; i <span class="op">&lt;</span> n<span class="op">-</span><span class="num">1</span>; i<span class="op">++</span>) {
+    <span class="kw">for</span> (<span class="kw">let</span> j <span class="op">=</span> <span class="num">0</span>; j <span class="op">&lt;</span> n<span class="op">-</span>i<span class="op">-</span><span class="num">1</span>; j<span class="op">++</span>) {
+      <span class="kw">if</span> (tomb[j] <span class="op">&gt;</span> tomb[j<span class="op">+</span><span class="num">1</span>]) {
+        [tomb[j], tomb[j<span class="op">+</span><span class="num">1</span>]] <span class="op">=</span> [tomb[j<span class="op">+</span><span class="num">1</span>], tomb[j]];
+      }
+    }
+  }
+  <span class="kw">return</span> tomb;
+}</pre>
+      </div>
+      <div class="card">
+        <h3>Min/Max keresés – O(n)</h3>
+<pre><span class="kw">function</span> <span class="fn">minimumKeres</span>(tomb) {
+  <span class="kw">let</span> min <span class="op">=</span> tomb[<span class="num">0</span>];
+  <span class="kw">for</span> (<span class="kw">let</span> i <span class="op">=</span> <span class="num">1</span>; i <span class="op">&lt;</span> tomb.length; i<span class="op">++</span>) {
+    <span class="kw">if</span> (tomb[i] <span class="op">&lt;</span> min) min <span class="op">=</span> tomb[i];
+  }
+  <span class="kw">return</span> min;
+}
+
+<span class="cmt">// JS beépített:</span>
+<span class="fn">Math.min</span>(...tomb);
+<span class="fn">Math.max</span>(...tomb);</pre>
+        <h3 style="margin-top:14px">Összesítés (összeg, átlag)</h3>
+<pre><span class="kw">function</span> <span class="fn">atlag</span>(tomb) {
+  <span class="kw">const</span> osszeg <span class="op">=</span> tomb.<span class="fn">reduce</span>((a, b) <span class="op">=&gt;</span> a <span class="op">+</span> b, <span class="num">0</span>);
+  <span class="kw">return</span> osszeg <span class="op">/</span> tomb.length;
+}</pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== VALIDÁLÁS ==================== -->
+<div class="tab-content" id="tab-validalas" style="--accent: var(--accent-css)">
+
+  <div class="section">
+    <div class="section-title">PHP Szerver oldali validálás</div>
+    <div class="grid grid-2">
+      <div class="card">
+        <h3>Alap validálás</h3>
+<pre><span class="var">$hibak</span> <span class="op">=</span> [];
+
+<span class="cmt">// Kötelező mező:</span>
+<span class="kw">if</span> (<span class="fn">empty</span>(<span class="fn">trim</span>(<span class="var">$_POST</span>[<span class="str">'nev'</span>]))) {
+  <span class="var">$hibak</span>[] <span class="op">=</span> <span class="str">"A név kötelező!"</span>;
+}
+
+<span class="cmt">// Hossz ellenőrzés:</span>
+<span class="kw">if</span> (<span class="fn">strlen</span>(<span class="var">$nev</span>) <span class="op">&lt;</span> <span class="num">2</span> <span class="op">||</span> <span class="fn">strlen</span>(<span class="var">$nev</span>) <span class="op">&gt;</span> <span class="num">50</span>) {
+  <span class="var">$hibak</span>[] <span class="op">=</span> <span class="str">"Név 2-50 karakter!"</span>;
+}
+
+<span class="cmt">// Szám ellenőrzés:</span>
+<span class="kw">if</span> (<span class="op">!</span><span class="fn">is_numeric</span>(<span class="var">$kor</span>) <span class="op">||</span> <span class="var">$kor</span> <span class="op">&lt;</span> <span class="num">0</span>) {
+  <span class="var">$hibak</span>[] <span class="op">=</span> <span class="str">"Hibás kor!"</span>;
+}
+
+<span class="cmt">// Hibák kiírása:</span>
+<span class="kw">if</span> (<span class="op">!</span><span class="fn">empty</span>(<span class="var">$hibak</span>)) {
+  <span class="kw">foreach</span> (<span class="var">$hibak</span> <span class="kw">as</span> <span class="var">$hiba</span>) {
+    <span class="kw">echo</span> <span class="str">"&lt;p class='error'&gt;<span class="var">$hiba</span>&lt;/p&gt;"</span>;
+  }
+}</pre>
+      </div>
+      <div class="card">
+        <h3>filter_var() – beépített szűrők</h3>
+<pre><span class="cmt">// Email validálás:</span>
+<span class="fn">filter_var</span>(<span class="var">$email</span>, <span class="kw">FILTER_VALIDATE_EMAIL</span>);
+
+<span class="cmt">// URL validálás:</span>
+<span class="fn">filter_var</span>(<span class="var">$url</span>, <span class="kw">FILTER_VALIDATE_URL</span>);
+
+<span class="cmt">// Szám validálás:</span>
+<span class="fn">filter_var</span>(<span class="var">$szam</span>, <span class="kw">FILTER_VALIDATE_INT</span>);
+<span class="fn">filter_var</span>(<span class="var">$szam</span>, <span class="kw">FILTER_VALIDATE_FLOAT</span>);
+
+<span class="cmt">// Szanitálás (tisztítás):</span>
+<span class="fn">filter_var</span>(<span class="var">$str</span>, <span class="kw">FILTER_SANITIZE_STRING</span>);
+<span class="fn">filter_var</span>(<span class="var">$int</span>, <span class="kw">FILTER_SANITIZE_NUMBER_INT</span>);
+
+<span class="cmt">// Regex validálás:</span>
+<span class="kw">if</span> (<span class="op">!</span><span class="fn">preg_match</span>(<span class="str">'/^[a-zA-Z\s]{2,50}$/'</span>, <span class="var">$nev</span>)) {
+  <span class="var">$hibak</span>[] <span class="op">=</span> <span class="str">"Hibás névalak!"</span>;
+}</pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">JavaScript Kliens oldali validálás</div>
+    <div class="grid grid-2">
+      <div class="card">
+        <h3>Form validálás eseménnyel</h3>
+<pre><span class="fn">document.getElementById</span>(<span class="str">'form'</span>)
+  .<span class="fn">addEventListener</span>(<span class="str">'submit'</span>, <span class="kw">function</span>(e) {
+
+  <span class="kw">const</span> nev   <span class="op">=</span> <span class="fn">document.getElementById</span>(<span class="str">'nev'</span>).value.<span class="fn">trim</span>();
+  <span class="kw">const</span> email <span class="op">=</span> <span class="fn">document.getElementById</span>(<span class="str">'email'</span>).value.<span class="fn">trim</span>();
+  <span class="kw">let</span> hibak <span class="op">=</span> [];
+
+  <span class="kw">if</span> (nev.<span class="fn">length</span> <span class="op">&lt;</span> <span class="num">2</span>) {
+    hibak.<span class="fn">push</span>(<span class="str">"Kötelező a név!"</span>);
+  }
+
+  <span class="kw">const</span> emailRegex <span class="op">=</span> <span class="str">/^[^\s@]+@[^\s@]+\.[^\s@]+$/</span>;
+  <span class="kw">if</span> (<span class="op">!</span>emailRegex.<span class="fn">test</span>(email)) {
+    hibak.<span class="fn">push</span>(<span class="str">"Hibás email!"</span>);
+  }
+
+  <span class="kw">if</span> (hibak.length <span class="op">&gt;</span> <span class="num">0</span>) {
+    e.<span class="fn">preventDefault</span>();
+    <span class="fn">document.getElementById</span>(<span class="str">'hibak'</span>).innerHTML
+      <span class="op">=</span> hibak.<span class="fn">map</span>(h <span class="op">=&gt;</span> <span class="str">`&lt;p&gt;${h}&lt;/p&gt;`</span>).<span class="fn">join</span>(<span class="str">''</span>);
+  }
+});</pre>
+      </div>
+      <div class="card">
+        <h3>HTML5 beépített validálás</h3>
+<pre><span class="tag">&lt;input</span> <span class="attr">type=</span><span class="str">"email"</span>
+       <span class="attr">name=</span><span class="str">"email"</span>
+       <span class="attr">required</span><span class="tag">&gt;</span>
+
+<span class="tag">&lt;input</span> <span class="attr">type=</span><span class="str">"number"</span>
+       <span class="attr">min=</span><span class="str">"0"</span>
+       <span class="attr">max=</span><span class="str">"120"</span>
+       <span class="attr">required</span><span class="tag">&gt;</span>
+
+<span class="tag">&lt;input</span> <span class="attr">type=</span><span class="str">"text"</span>
+       <span class="attr">minlength=</span><span class="str">"2"</span>
+       <span class="attr">maxlength=</span><span class="str">"50"</span>
+       <span class="attr">required</span><span class="tag">&gt;</span>
+
+<span class="tag">&lt;input</span> <span class="attr">type=</span><span class="str">"text"</span>
+       <span class="attr">pattern=</span><span class="str">"[A-Za-z]+"</span>
+       <span class="attr">title=</span><span class="str">"Csak betűk!"</span><span class="tag">&gt;</span></pre>
+        <div class="callout"><b>⚠ Fontos:</b> kliens oldali validálás kiegészítő! Mindig kell <b>szerver oldali</b> is – a JS megkerülhető!</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Hasznos Regex minták</div>
+    <table class="tbl">
+      <tr><th>Minta</th><th>Mire illeszkedik</th></tr>
+      <tr><td>/^[a-zA-Z]+$/</td><td>Csak latin betűk</td></tr>
+      <tr><td>/^\d+$/</td><td>Csak számjegyek</td></tr>
+      <tr><td>/^\d{4}-\d{2}-\d{2}$/</td><td>Dátum: 2024-01-15</td></tr>
+      <tr><td>/^[^\s@]+@[^\s@]+\.[^\s@]+$/</td><td>Email (egyszerű)</td></tr>
+      <tr><td>/^[\+]?[\d\s\-]{7,15}$/</td><td>Telefonszám</td></tr>
+      <tr><td>/^.{8,}$/</td><td>Min. 8 karakter jelszó</td></tr>
+      <tr><td>/(?=.*[A-Z])(?=.*\d).{8,}/</td><td>Jelszó: nagybetű + szám + min 8</td></tr>
+    </table>
+  </div>
+</div>
+
+<script>
+  const tabs = document.querySelectorAll('.tab-btn');
+  const contents = document.querySelectorAll('.tab-content');
+
+  tabs.forEach(btn => {
+    btn.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      contents.forEach(c => c.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+    });
+  });
+</script>
+</body>
+</html>

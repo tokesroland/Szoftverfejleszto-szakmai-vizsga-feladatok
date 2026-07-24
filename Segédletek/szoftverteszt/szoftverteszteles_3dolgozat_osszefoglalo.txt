@@ -1,0 +1,249 @@
+
+Tesztelési módszerek változtatás után:
+1. ellenőrző tesztelés: a változtatás kijavította-e a hibát, amiért változtatni kellett
+2. regressziós tesztelés: a változtatás okozott-e új hibákat, amelyek a változtatás előtt nem voltak jelen
+
+Ellenőrző tesztelés:
+- megerősíti, hogy egy korábban talált hibát kijavítottak-e, és a javítás valóban működik-e a szoftverben
+- közvetlenül a hibajavítás után végzik
+- kizárólag a javított hiba ellenőrzésére koncentrál, nem teszteli az egész rendszert az erőforrás-megtakarítás érdekében 
+- lépései:
+1. újrafuttatjuk az összes tesztesetet, amelyek korábban elbuktak az adott hiba miatt
+2. (opcionális) kiegészíthetjük a tesztfuttatást új tesztekkel is, amelyek lefedik a javítás által bevezetett módosításokat is
+
+Regressziós tesztelés:
+- megerősíti, hogy egy új funkció bevezetése vagy egy hiba kijavítása után (akár ellenőrző tesztelés után) a szoftver többi része továbbra is megfelelően működik, és az új változtatás nem okozott problémákat a már meglévő funkciókban
+- közvetlenül az új funkció bevezetése vagy meglévő funkció javítása után végzik
+- egész rendszert átfogja, nem csak a változtatott vagy javított részeket, mivel az új funkció a rendszer más részeiben is változást idézhet elő
+- lépés:
+1. (opcionális) a tesztelés megkezdése előtt hatáselemzéssel (hatásanalízis) megállapíthatjuk, hogy a szoftver mely részei lehetnek érintettek a módosítás által, így csökkenthető a tesztelendő területek száma a rendszerben (= szelektív regressziós tesztelés)
+2. újrafuttatjuk a korábban már sikeresen futtatott teszteseteteket, amik érintettek lehetnek a változtatás által
+- a regressziós tesztek száma növekedik minden kiadással, és sok alkalommal lefutásra kerülnek egy projekt alatt, ezért fontos őket automatizálni
+
+Karbantartás:
+- a legtöbb rendszer végül eljut odáig, hogy éles környezetben működjön, akár hosszú ideig
+- a rendszer változtatására ezalatt is szükség lehet, pl.: újabb fejlesztésekre, adaptációkra, javításokra
+- mivel a rendszer változik, ezért le kell ellenőrizni, hogy megfelelően működik-e, mielőtt élesítenénk az új verziót -> szükség van karbantartási tesztelésre
+
+Karbantartási tesztelés:
+- élesített, üzembe helyezett, működő rendszeren végzett tesztelések
+- mikor szükséges: 
+1. hibajavítás -> pl. hotfixek
+2. frissítés -> új funkciók kiadása
+3. fejlesztés -> pl. teljesítményjavítás
+4. üzemeltetési környezet frissítése vagy migrációja -> pl. új  hardver, szoftver, platform, operációs rendszer, hálózati környezet
+5. visszavonultatás -> rendszer üzemeltetésének leállítása a múltbeli adatokhoz való hozzáférés megtartása mellett (általában alkalmazás élettartama végén) -> archiválás és adattárolás
+- módszerei:
+1. hatásanalízis -> teljes rendszert átfogó teszt ebben a fázisban megvalósíthatatlan vagy túlságosan költséges lenne -> meg kell vizsgálni a rendszer elemei közötti összefüggéseket -> melyik részeire lesz hatással az új változtatás
+2. rejtett hibák keresése -> csak hosszan tartó használat során felszínre kerülő hibák előzetes megtalálása és megelőzése
+3. nemfunkcionális tesztelés -> teljesítmény, biztonsági tesztelés
+4. ellenőrző és regressziós tesztelés
+5. környezeti és adatkonverziós tesztek migráció esetén
+6. adatarchiválási és visszaállítási/hozatali tesztek visszavonultatás esetén
+- mitől függ: 
+1. változtatás kockázatának mértéke
+2. meglévő rendszer mérete
+3. változtatás mérete
+
+Karbantartás fajtái:
+1. Korrektív: hibák és hiányosságok javítása és azzal járó következmények ellenőrzése
+2. Adaptív: új megváltozott környezethez való alkalmazkodás, abba való beillesztés, kompatibilitás biztosítása
+3. Perfektív: rendszer funkcionalitásainak módosítása és bővítése teljesítménynövelés és felhasználói igényeknek való megfelelés céljából
+4. Preventív: jövőbeli problémák megelőzése és minimalizálása kódoptimalizációval és dokumentáció frissítésével
+-> mind a négy esetben szükség van megfelelő tesztelésre
+
+Tesztszintek (legnépszerűbb négyes felosztás):
+1. egységteszt
+2. integrációs teszt
+3. rendszerteszt
+4. elfogadási teszt
+
+1. Egységteszt = komponensteszt = unitteszt:
+- a programkód önállóan tesztelhető legkisebb részeinek = egységeinek ellenőrzése külön-külön, a többi egységétől függetlenül
+- egy egységnek legtöbbször egy függvényt tekintünk
+- célja megerősíteni, hogy az adott egység megfelelően működik az elvárt bemenetekkel és kimenetekkel
+- általában a fejlesztők végzik a saját fejlesztési környezetükben
+- általában a kód azonnali ellenőrzésére használják, és a talált hibát helyben javítják
+- előnyei: gyors futási idő, korai hibafelismerés, biztonságos refaktorálás, automatizáció lehetősége, dokumentációként is szolgál (hogyan kell meghívni a függvényt), tesztvezérelt fejlesztés (TDD) lehetősége
+- gyakorlati alapelvek:
+1. nem függhetnek külső adatbázistól vagy fájlrendszertől
+2. egy teszteset csak egy viselkedést vizsgáljon
+3. mindig legyen beszédes neve a tesztesetnek
+4. törekedjünk az AAA minta alkalmazására: 1. Arrange (bemenet, előkészítés), 2. Act (függvényhívás), 3. Assert (tényleges és elvárt kimenet összehasonlítása))
+5. értintett kód módosításakor azonnal frissítsük a tesztesetet is
+6. változtatások után azonnal futassuk újra az egységteszteket
+7. törekedjünk a teljes kódlefedettségre -> az egységtesztek a kód minden ágát és elágazását vizsgálják
+8. legyen teszteset minden lehetséges bemenettípusra -> helyes, hibás, határérték bemenetek
+- gyakran igényel teszttámogató szoftverkörnyezetet vagy egységteszt-keretrendszert, pl.: NUnit, xUnit stb. 
+
+Külső komponenseket helyettesítő módszerek:
+- dummy: olyan használatlan érték vagy egyszerű objektum, ami a tesztesetünk szempontjából irreleváns, de kitöltése nélkül nem lenne futattható a teszt (pl. "OK")
+- csonk (stub): olyan alacsonyszintű osztályhelyettesítő, ami minimális működéssel alapvető válaszokat nyújt, és ennél többet nem csinál, de megléte nélkül nem lenne futattható a teszt (pl. return new User("Kovács Péter", 32, "HUN");)
+- meghajtó (driver): olyan magasszintű osztályhelyettesítő, ami a belső komponensek megfelelő bemenettel való meghívását végzi, és ennél többet nem csinál, de megléte nélkül nem lenne futattható a teszt (pl. userManager = new MockUserManager(user);)
+- mockolás (mocking): a mock egy dinamikus helyettesítő objektum, ami képes a valódi objektum egy bizonyos viselkedését szimulálni, ezáltal ellenőrizhető a tesztelt egységgel való interakciója és kommunikációja is, általában külső könyvtárak beépített osztályaival mockolunk (pl. Mock<UserManager> userManager)
+- virtualizáció (service virtualization): külső környezeti függőségek szimulálása, amik egyébként nehezen elérhetőek a rendszer élesítése előtt, pl. szerveroldali API vagy külső adatbázis helyett lokális használata
+
+2. Integrációs teszt:
+- a szoftver különálló komponenseinek a megfelelő együttműködését, interakcióját és egymással való kommunikációját, adatcseréjét ellenőrzi
+- különálló komponens lehet: kódegység, adatbázis, fájlrendszer, hardveregység, operációs rendszer, további külső beintegrált rendszerek
+- a még hiányzó vagy befejezetlen komponenseket mockolással helyettesítik, a már működőkkel való kapcsolat teszteléséhez
+- az interfészek, kapcsolódási pontok tesztelésére összpontosít -> interfész = két különálló funkcionális egységet összecsatoló és kommunikációs pontként szolgáló felület vagy elem
+- interfész lehet: függvényhívás, összefogó osztály, API, adatbázis-hozzáférés, fájlrendszer-hozzáférés
+
+Komponensek közötti megfelelő interakció tényezői:
+- kapcsolat megléte -> az egyik komponens sikeresen eléri a másikat
+- adatáramlás -> az egyik komponens által előállított adat helyesen továbbítódik és értelmezhető a másik komponens számára
+- hibakezelés -> az egyik komponens megfelelően kezeli, amikor a másik hibát jelez vagy a kapcsolat megszakad vele
+- időzítés -> komponensek közti kommunikáció az elvárt időn belül megtörténik
+
+Integrációs teszt gyakorlati alapelvei:
+- szeparáljuk a különálló teszteseteket -> minden teszteset csak egy tisztán meghatározott, jól definiált funkciót vagy interakciót teszteljen
+- dokumentáljuk a tesztelési forgatókönyvet -> legyen világos, hogy milyen interakciókat vizsgálunk és miért
+- törekedjünk a valós komponensek használatára -> csak akkor mockoljunk, ha a komponens nem elérhető
+- automatizáljunk CI (folyamatos integráció) eszközökkel -> pl. Jenkins, Azure DevOps, GitHub Actions 
+- valós környezetben előforduló bemeneteket használjunk
+
+Integrációs teszt stratégiák:
+1. Nagy bumm (Big-bang) tesztelés:
+- összes komponenst egyszerre integrálják, majd a teljes rendszer működését tesztelik
+- általában nem jó választás -> csak az összes komponens elkészülte után lehet elvégezni, nehéz egy konkrét komponenskapcsolat tesztelése, és nehéz a hibákat lokalizálni
+2. Inkrementális tesztelés:
+- a komponenseket lépésről lépésre integrálják és tesztelik
+- fajtái:
+a) Felülről lefelé irányuló (Top-down) tesztelés:
+- magasabb szintű komponensek kapcsolatait tesztelik először, az alsóbb szinteken álló komponenseket csonkokkal (stub) helyettesítik
+b) Alulról felfelé irányuló (Bottom-up) tesztelés:
+- alacsonyabb szintű komponensek kapcsolatait tesztelik először, a felsőbb szinteken lévő komponenseket meghajtókkal (driver) helyettesítik
+c) Szendvics (Sandwich) tesztelés:
+- a lefelé és felfelé haladó tesztelést kombinálják
+
+Integrációs szintek:
+- mekkora méretűek a teszt objektumok
+- minél nagyobbak, annál nehezebb a hibák elszigetelése és lokalizálása
+- általában két fő szintet különböztetünk meg:
+1. Komponens integrációs teszt:
+- a rendszer komponenseinek integrációja és tesztelése
+- egységtesztelés után kezdődik meg
+- általában fejlesztők végzik
+2. Rendszer integrációs teszt:
+- a rendszer többi rendszerrel való együttműködését ellenőrzi
+- rendszertesztelés után kezdődik meg
+- általában tesztelők végzik
+
+3. Rendszerteszt:
+- teljes rendszer viselkedését vizsgálja -> minden funkcióját és összes komponensének együttes működését teszteli 
+- hibakeresés mellett a rendszer stabilitását (pl. teljesítmény, biztonság), üzleti és felhasználói igényeknek való megfelelését is ellenőrzi
+- általában fejlesztőktől független tesztelői csapat végzi 
+
+Rendszerteszt alapjául szolgálhat: 
+- Kockázat és követelmény specifikáció -> potenciális veszélyeket és problémákat, valamint az ezek megoldására való elvárásokat határozza meg, pl. "nagy terhelés alatt magas válaszidő" -> "1000 egyidejű felhasználónál 2 másodpercen belüli válaszidő"
+- Üzleti folyamatleírások (business processes) -> üzleti logikának eleget tevő munkafolyamatok lépéseit és tevékenységeit írja le
+- Használati esetek (use case) -> felhasználói szerepkörök és a rendszer közötti interakciókat írja le -> milyen felhasználói viselkedésre milyen választ ad a rendszer
+- Felhasználói történetek (user story) -> rövid, természetes nyelven írt végfelhasználói elvárások, pl. "Mint regisztrált felhasználó, szeretném látni a vásárlási előzményeimet, hogy nyomon követhessem a rendeléseimet."
+- Rendszer viselkedésleírások (system behaviour) -> milyen bemenetek, állapotok vagy tranzakciók esetén milyen kimenetet vagy viselkedést produkál a rendszer
+
+Rendszerteszt gyakorlati alapelvei:
+- prioritások legyenek alaposan meghatározva -> rendszer kritikus részeire fókuszáljunk
+- törekedjünk a valóságos környezet szimulálására -> minél inkább a végfelhasználói környezethez hasonlítson
+- minden hibát alaposan dokumentáljunk világos nyelvezettel -> fejlesztőknek legyen egyértelmű mit kell javítani
+- írjunk részletes tesztjelentéseket -> segíti az üzleti és technikai csapatok kommunikációját
+- automatizáljuk az alapvető teszteseteket, és manuálisan teszteljük a speciális eseteket, amik nem fedhetőek le egyébként
+- végponttól végpontig tesztelés (E2E = end-to-end testing) -> a rendszer teljes működését ellenőrzi a rendszer egészén végigmenő felhasználói folyamatokon keresztül -> a cél lefedni az összes komponens és interfész együttműködését, és az adatáramlás teljes folyamatát
+- forgatókönyv-alapú tesztelés (scenario-based testing) -> rendszer tesztelése valósághű felhasználói helyzeteket szimuláló forgatókönyvek lépései mentén
+
+Funkcionális tesztelés:
+- ellenőrzi, hogy a rendszer képes végrehajtani a specifikációban meghatározott funkciókat
+- "mit" kell tudni a rendszernek csinálni
+- funkcionális tényezők pl.: üzleti logika, felhasználói hitelesítés és jogosultságok, adatbevitel és feldolgozás, adattárolás és lekérdezés, navigáció és menüstruktúra, külső integrációk, stb.
+- specifikált megrendelői követelményeket kell lefednie
+- jellemző tesztszintek: egységteszt, integrációs teszt, rendszerteszt, elfogadási teszt
+- néha a nemfunkcionális tesztelés visszahathat rá (pl. kiderül, hogy a helytelen funkcionalitás alapja igazából adatvesztés nagy megterhelésnél vagy túl nagy válaszidő)
+
+Nemfunkcionális tesztelés:
+- ellenőrzi, hogy a rendszer képes a követelményeknek megfelelő szinten működni és megfelelő minőséget nyújtani
+- "hogyan" kell tudni a rendszernek viselkedni
+- nem funkcionális tényezők pl.: teljesítmény, biztonság, felhasználói élmény (UX), skálázhatóság, karbantarthatóság, megbízhatóság, kompatibilitás, hordozhatóság, stb.
+- mérhető minőségi jellemzőket kell ellenőriznie (pl. válaszidő miliszekundumban)
+- jellemző tesztszintek: rendszerteszt, elfogadási teszt
+- gyakran függ a megelőző funkcionális tesztektől (pl. teljesítményteszt nem futtatható hibás alapfunkciójú rendszerekre) 
+
+4. Elfogadási teszt = átvételi teszt:
+- ellenőrzi, hogy a rendszer készen áll-e az éles környezetbe történő telepítésre és megfelel-e a felhasználói elvárásoknak és üzleti igényeknek
+- általában a megrendelői oldalról és a tervezett felhasználók végzik
+- fejlesztési ciklus legvégén végzik, ez alapján dönt a megrendelő az élesítés jóváhagyása mellett vagy ellen
+- nem feltétlenül egyszeri folyamat -> agilis projektekben ciklusonként ismétlődik, minden ciklus végén csak azt a funkciót tekinthetjük késznek, amely teljesítette az elfogadási kritériumokat és a megrendelői oldalról jóváhagyásra került
+
+Elfogadási teszt gyakorlati alapelvei:
+- folyamatosan tisztázzuk és dokumentáljuk a követelményeket, amíg nem egyértelmű
+- mindenképp be kell vonni a végfelhasználókat, itt a tesztelésben már aktívan részt kell venniük
+- életszerű, éles környezetben is előforduló tesztelési környezet és tesztadatok alapos előkészítése
+- részletes tesztelési tervezet előkészítése -> egyszerűbb és komplexebb teszt forgatókönyvek, üzleti folyamatok, elfogadási kritériumok
+- prioritások legyenek alaposan meghatározva -> rendszer kritikus részeire fókuszáljunk
+- meg kell tervezni előre az esetleges óvintézkedéseket a kritikus folyamatok kapcsán, hogy minimalizálni tudjuk a kockázatokat
+- folyamatosan kommunikáljon egymással a fejlesztői, tesztelői és megrendelői csapat - rendszeresen gyűjtsük be a visszajelzéseket és korrigáljunk ezek szerint (pl. felhasználói élmény, követelmény teljesítésének hiánya)
+- automatizáljuk a gyakran ismétlődő teszteseteket, amik több tesztelési folyamat részét is képzik (pl. Selenium)
+- használjunk teszteset-menedzsment eszközöket (pl. TestRail) -> tesztesetek nyomonkövetése és dokumentálása
+
+Elfogadási teszt fajtái:
+- Felhasználói elfogadási teszt (UAT = User Acceptance Testing) -> a végfelhasználók végzik, akik életszerű forgatókönyvek alapján tesztelik a rendszer használhatóságát és funkcióinak megfelelő működését
+- Üzleti elfogadási teszt (BAT = Business Acceptance Testing) -> üzleti elemzők és döntéshozók vizsgálják, hogy rendszer megfelel az üzleti követelményeknek és támogatja a szervezet céljait
+- Üzemeltetési/működési elfogadási teszt (OAT = Operational Acceptance Testing) -> a rendszer technikai ellenőrzése, a működőképességét és karbantarthatóságát vizsgálja az élesítés előtt (pl. katasztrófakezelés, végfelhasználók képzése, karbantartási eljárások, adatterhelés és migrációs feladatok, biztonsági eljárások, helyreállítási tervek stb.)
+- Szerződéses és szabályozott elfogadási teszt (Contract and Regulation Acceptance Testing) -> megrendelői képviselők és ügyvédek vizsgálják, hogy a rendszer megfelel-e a szerződésben és a törvényekben rögzített feltételeknek és előírásoknak (pl. adatvédelmi törvény, bankbiztonsági rendelkezések) -> jogilag bizonyítható legyen a szoftver megfelelősége, közvetlenül kapcsolódik a megrendelői kifizetésekhez is
+- Alfa teszt -> a rendszer belső fejlesztőcsapat által végzett tesztelése általában a fejlesztési környezetben, mielőtt a külső felhasználók elé tárják
+- Béta teszt -> a rendszer külső felhasználók által végzett tesztelése általában az éles környezet szimulációjában, miután az alfa teszt befejeződött
+
+Feketedoboz tesztelés:
+- a rendszer külső működésére koncentrál -> felhasználó számára látható funkciók
+- bemenetek és arra kapott kimenetek alapján vizsgálja a szoftver helyességét
+- specifikáció alapú tesztelés -> üzleti követelmények, felhasználói forgatókönyvek
+- általában végfelhasználók, minőségbiztosítók vagy olyan tesztelők végzik, akik nem ismerik a kódot
+- főként rendszertesztelés, elfogadási tesztelés és rendszerintegrációs tesztelés során alkalmazzák
+
+Fehérdoboz tesztelés:
+- a rendszer belső felépítésére koncentrál -> fejlesztő számára látható funkciók
+- maga a kód logikai felépítése és működése alapján vizsgálja a szoftver helyességét
+- struktúra alapú tesztelés -> kódállomány, algoritmusok, logikai struktúrák
+- általában fejlesztők vagy olyan tesztelők végzik, akik ismerik a kódot
+- főként egységtesztelés és komponensintegrációs tesztelés során alkalmazzák
+
+Speciális tesztelési fajták:
+
+Terheléses tesztelés:
+- átlagos vagy megemelt terhelés alatt vizsgálja a rendszer teljesítményét
+- segít optimalizálni a rendszert, hogy elkerülje a túlterhelés okozta hibákat
+- felhasználása pl.: nagy forgalmú weboldalak (pl. black friday akciók előtt), rendszerek skálázhatóságának ellenőrzése
+
+Stressz tesztelés:
+- extrém vagy direkt túlzott terhelés alatt vizsgálja a rendszer teljesítményét
+- segít a rendszerösszeomlás megelőzésében és az eddig feltáratlan hibák megtalálásában
+- felhasználása pl.: kritikus rendszerek (pl. banki vagy egészségügyi alkalmazások)
+
+Robosztussági teszt:
+- rendszer stabilitásának vizsgálata szokatlan, kedvezőtlen vagy szélsőséges körülmények között
+- segít stabil működést biztosítani a normálistól eltérő esetekben is (pl. hibás vagy érvénytelen bemenetek, hardver- vagy szoftverhiba, rendszererőforrások hiánya (memória, processor stb.))
+- felhasználása pl.: kritikus rendszerek (pl. banki vagy egészségügyi alkalmazások)
+
+Random és "csimpánz" teszt:
+- rendszer tesztelése véletlenszerűen generált bemenetekkel és véletlenszerű műveletek végzésével
+- segít olyan hibák feltárására, amikre alapból nem is gondoltunk vagy szisztematikusan nem tesztelnénk
+- felhasználása pl.: sokfajta bemenettel és hibakezeléssel rendelkezdő rendszerek
+
+Smoke teszt: 
+- alapvető ellenőrzés, hogy a rendszer stabil-e, legfontosabb funkciói működnek-e, ha ez sikertelen, a részletes tesztelést nem folytatják
+- gyors visszajelzést ad az alapvető hibák feltárásával
+- felhasználása pl.: nagyobb rendszerek esetén gyors átfogó tesztelést nyújt
+
+Sanity teszt:
+- alapvető ellenőrzés, hogy a szoftver egy új funkciója vagy egy meglévő javítása megfelelően működik-e, ha ez sikertelen, a részletes tesztelést nem folytatják
+- gyors visszajelzést ad arról, hogy az alapvető funkciók érintetlenül maradtak és az új vagy módosított funkció működőképes
+- felhasználása pl.: nagyobb rendszerek esetén gyors célzott tesztelést nyújt
+
+Biztonsági tesztelés:
+- rendszer sérülékenységeinek feltárása, hogy megvédje az adatokat a jogosulatlan hozzáférésektől
+- segít elkerülni az adatlopást és egyéb támadásokat
+- felhasználása pl.: adatvédelmi és adatbiztonsági rendszerek (pl. banki, kormányzati alkalmazások)
+
+Használhatósági tesztelés:
+- felhasználói élmény és az alkalmazás könnyű használatának vizsgálata a végfelhasználók által
+- segít a felhasználói visszajelzések gyűjtésében és az elégedettség növelésében, valamint a felhasználói felület átláthatóságában
+- felhasználása pl.: felhasználói felület központú szoftverek (pl. weboldalak, mobilalkalmazások)

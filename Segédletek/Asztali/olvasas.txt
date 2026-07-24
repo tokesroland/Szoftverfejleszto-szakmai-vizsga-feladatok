@@ -1,0 +1,308 @@
+Elolvasott regények grafikus feladat (Windows Forms)
+----------------------------------------------------
+
+Projekt létrehozása:
+- Visual Studio
+- új Windows Forms App (.NET) projekt
+- név: Olvasas
+
+Menü létrehozása:
+- húzzuk be a MenuStrip-et a formra a Toolbox-ból
+- a MenuStrip-en kattintsunk a Type Here mezőkbe, és írjuk a menüpontokat
+
+Az alkalmazás elindulásakor egy nyitókép foglaljon helyet (konyv.jpg)
+
+A képet célszerű a projekt gyökerében lévő Resources mappába elhelyezni. Így rendszerezve lesznek az erőforrások, és könnyebben kezelhetők lesznek.
+
+A Toolbox-ból húzzunk egy PictureBox-ot a formra. A Properties ablakban állítsuk be a PictureBox-ot:
+- Image: válasszuk ki a konyv.jpg képet
+- SizeMode: állítsuk StretchImage-re, hogy a kép megfelelően kitöltse a formot
+- Name: pbNyitokep
+
+DataGridView hozzáadása:
+- Name: dgvElolvasott
+
+// A kezdeti állapot beállítása: nyitókép látszik, DataGridView el van rejtve
+pbNyitokep.Visible = true;
+dgvElolvasott.Visible = false;
+
+private void akikMárOlvastakToolStripMenuItem_Click(object sender, EventArgs e)
+{
+	// A nyitókép elrejtése és DataGridView megjelenítése
+    	pbNyitokep.Visible = false;
+    	dgvElolvasott.Visible = true;
+}
+
+Adatbázis-kapcsolat beállítása: (MySql.Data csomag)
+- NuGet csomagkezelő (Tools → NuGet Package Manager → Manage NuGet Packages for Solution…)
+- MySql.Data csomag telepítése
+- új osztály: Database.cs
+
+private string connectionString = "server=localhost;database=olvasas;uid=root;pwd=;";
+public MySqlConnection GetConnection()
+{
+    	return new MySqlConnection(connectionString);
+}
+
+A DataGridView oszlopainak beállítása:
+
+private void SetupDataGridView()
+{
+    	// Töröljük az esetleges oszlopokat
+    	dgvElolvasott.Columns.Clear();
+    	// Hozzáadjuk az oszlopokat manuálisan (Első paraméter ("Diak"): az oszlop belső azonosítója, amelyet a kódban használunk. Ez nem jelenik meg a felhasználónak. Második paraméter ("Diák neve"): az oszlop fejlécének szövege, ami ténylegesen megjelenik a DataGridView-ban.)
+     	dgvElolvasott.Columns.Add("Diak", "Diák neve");
+ 	dgvElolvasott.Columns.Add("Elolvasott", "Elolvasott könyvek (db)");
+    	// Beállítjuk az oszlopok méretét automatikusan a tartalomhoz igazítva
+    	dgvEolvasott.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+}
+
+Hívjuk meg ezt a metódust a Form1 konstruktorában.
+
+GetElolvasott();
+
+private void GetElolvasott()
+{
+	// Először töröljük a esetlegesen meglévő sorokat
+    	dgvElolvasott.Rows.Clear();
+	// Létrehozzuk és megnyitjuk az adatbáziskapcsolatot
+    	using (var connection = new Database().GetConnection())
+    	{
+        	connection.Open();
+		// Az SQL lekérdezés
+        	string query = "SELECT d.DiakNev AS DiakNev, COUNT(e.DiakAzon) AS OlvasottKonyvek FROM diak d JOIN elolvasta e ON d.DiakAzon = e.DiakAzon GROUP BY d.DiakNev HAVING COUNT(e.DiakAzon) > 0;";
+		MySqlCommand command = new MySqlCommand(query, connection);
+		MySqlDataReader reader = command.ExecuteReader();
+		while (reader.Read())
+		{
+    			dgvElolvasott.Rows.Add(reader.GetString("DiakNev"), reader.GetInt32("OlvasottKonyvek"));
+		}
+    	}
+}
+
+Panel hozzáadása az űrlaphoz: a Panel vezérlő egy konténer, amelyben elhelyezhetjük az űrlap elemeit, és egyetlen Visible tulajdonság módosításával elrejthetjük vagy megjeleníthetjük az űrlapot.
+- húzzunk egy Panel vezérlőt (pnlUjOlvasas) a formra
+- helyezzük el benne a következőket:
+	- Label: Újabb elolvasott könyv felvétele, lblUjOlvasas, 16, félkövér, Autosize: False, TextAlign: TopCenter
+	- Label: Diák, lblDiak, 14
+	- ComboBox: cmbDiak
+	- Label: Könyv, lblKonyv, 14
+	- ComboBox: cmbKonyv
+	- Label: Kezdte:, lblKezdte, 14
+	- DateTimePicker: dtpKezdte, Format: Short
+	- Label: Befejezte:, lblBefejezte, 14
+	- DateTimePicker: dtpBefejezte, Format: Short
+	- Button: btnFelvetel, Felvétel, 14
+
+A menüpont működése:
+
+pnUjOlvasas.Visible = false;
+
+private void akikMárOlvastakToolStripMenuItem_Click(object sender, EventArgs e)
+{
+    	pbNyitokep.Visible = false;
+    	dgvElolvasott.Visible = true;
+    	pnlUjOlvasas.Visible = false;
+}
+
+private void újabbElolvasottKönyvToolStripMenuItem_Click(object sender, EventArgs e)
+{
+    	pbNyitokep.Visible = false;
+    	dgvElolvasott.Visible = false;
+    	pnlUjOlvasas.Visible = true;
+}
+
+GetDiakok();
+
+private void GetDiakok()
+{
+    	using (var connection = new Database().GetConnection())
+    	{
+        	connection.Open();
+        	string query = "SELECT DiakNev FROM diak";
+        	MySqlCommand cmd = new MySqlCommand(query, connection);
+        	MySqlDataReader reader = cmd.ExecuteReader();
+        	while (reader.Read())
+        	{
+            		string DiakNev = reader.GetString(0);
+            		cmbDiak.Items.Add(DiakNev);
+        	}
+    	}
+}
+
+GetKonyvek();
+
+private void GetKonyvek()
+{
+    	using (var connection = new Database().GetConnection())
+    	{
+        	connection.Open();
+        	string query = "SELECT KonyvSzerzo, KonyvCim FROM konyvek";
+        	MySqlCommand cmd = new MySqlCommand(query, connection);
+        	MySqlDataReader reader = cmd.ExecuteReader();
+        	while (reader.Read())
+        	{
+            		string konyvSzerzo = reader.GetString(0);
+            		string konyvCim = reader.GetString(1);
+            		cmbKonyv.Items.Add(konyvSzerzo + " - " + konyvCim);
+        	}
+    	}
+}
+
+
+Új rekord beszúrása az adatbázisba: hozzunk létre egy eseménykezelőt a btnFelvetel gombhoz
+
+private void btnFelvetel_Click(object sender, EventArgs e)
+{
+	bool ok = true;
+	if (cmbDiak.SelectedIndex == -1)
+	{
+    		MessageBox.Show("Válassz diákot!", "Hiba", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+    		ok = false;
+	}
+	if (cbKonyv.SelectedIndex == -1)
+	{
+    		MessageBox.Show("Válassz könyvet!", "Hiba", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+    		ok = false;
+	}
+	if (ok)
+	{
+    		using (var connection = new Database().GetConnection())
+    		{
+        		connection.Open();
+			// A kiválasztott értékek lekérése a ComboBoxokból és a DateTimePickerekből és segédfüggvények meghívása
+        		int diakId = GetDiakId(cmbDiak.SelectedItem.ToString(), connection);
+			int konyvId = GetKonyvId(cmbKonyv.SelectedItem.ToString(), connection);
+			string kezdte = dtpKezdte.Value.ToString("yyyy-MM-dd HH:mm:ss");
+			string befejezte = dtpBefejezte.Value.ToString("yyyy-MM-dd HH:mm:ss");
+			// Az SQL beszúró parancs
+        		string query = "INSERT INTO elolvasta (DiakAzon, KonyvAzon, OlvasasKezdete, OlvasasVege) VALUES (@diak, @konyv, @kezdte, @befejezte)";
+			MySqlCommand cmd = new MySqlCommand(query, connection);
+			cmd.Parameters.AddWithValue("@diak", diakId);
+			cmd.Parameters.AddWithValue("@konyv", konyvId);
+			cmd.Parameters.AddWithValue("@kezdte", kezdte);
+			cmd.Parameters.AddWithValue("@befejezte", befejezte);
+			cmd.ExecuteNonQuery();
+    		}
+		// A ComboBoxok visszaállítása
+		cmbDiak.SelectedIndex = -1;
+		cmbKonyv.SelectedIndex = -1;
+	}
+}
+
+Segédfüggvények az azonosítók lekérdezésére: mivel a ComboBoxokban diáknevek és könyvadatok szerepelnek, de az adatbázisban azonosítókra van szükség, ezért kell két segédfüggvény.
+
+private int GetDiakId(string diakNev, MySqlConnection connection)
+{
+    	string query = "SELECT DiakAzon FROM diak WHERE DiakNev = @nev";
+    	using (MySqlCommand cmd = new MySqlCommand(query, connection))
+    	{
+        	cmd.Parameters.AddWithValue("@nev", diakNev);
+        	return Convert.ToInt32(cmd.ExecuteScalar());
+    	}
+}
+
+private int GetKonyvId(string konyv, MySqlConnection connection)
+{
+    	string szerzo = konyv.Split(" - ")[0];
+    	string cim = konyv.Split(" - ")[1];
+    	string query = "SELECT KonyvAzon FROM konyvek WHERE KonyvSzerzo = @szerzo AND KonyvCim = @cim";
+    	using (MySqlCommand cmd = new MySqlCommand(query, connection))
+    	{
+        	cmd.Parameters.AddWithValue("@szerzo", szerzo);
+		cmd.Parameters.AddWithValue("@cim", cim);
+        	return Convert.ToInt32(cmd.ExecuteScalar());
+    	}
+}
+
+Új panel a statisztikához:
+- húzzunk egy Panel vezérlőt (pnlStatisztika) a formra
+- Label: lblMegNem, 14, kicsit félkövér, Könyvek amiket még nem olvastak:
+- Listbox: lbMegNem
+
+Form1 konstruktor: pnlStatisztika.Visible = false;
+akik...: pnlStatisztika.Visible = false;
+új...: pnlStatisztika.Visible = false;
+
+private void statisztikákToolStripMenuItem_Click(object sender, EventArgs e)
+{
+    	pbNyitokep.Visible = false;
+    	dgvElolvasott.Visible = false;
+    	pnlUjOlvasas.Visible = false;
+    	pnlStatisztika.Visible = true;
+	// Először töröljük a ListBox előző tartalmát
+    	lbMegNem.Items.Clear();
+	using (var connection = new Database().GetConnection())
+	{
+    		connection.Open();
+    		string query = "SELECT k.KonyvSzerzo, k.KonyvCim FROM konyvek k LEFT JOIN elolvasta e ON k.KonyvAzon = e.KonyvAzon WHERE e.KonyvAzon IS NULL;";
+    		MySqlCommand command = new MySqlCommand(query, connection);
+    		MySqlDataReader reader = command.ExecuteReader();
+    		while (reader.Read())
+    		{
+        		lbMegNem.Items.Add(reader.GetString(0) + " - " + reader.GetString(1));
+    		}
+	}
+}
+
+A LEFT JOIN azért szükséges itt, mert azt szeretnénk látni, hogy mely könyvek nincsenek az elolvasta táblában.
+A LEFT JOIN minden könyvet visszaad a konyvek táblából, és melléilleszti az elolvasta tábla adatait (ha van egyezés).
+Azoknál a könyveknél, amelyeket senki sem olvasott, az elolvasta.KonyvAzon értéke NULL lesz.
+A WHERE e.KonyvAzon IS NULL feltétel kiszűri azokat a sorokat, ahol nincs olvasási rekord.
+
+Ha INNER JOIN-t használnánk, akkor csak azokat a könyveket kapnánk meg, amelyeket már legalább egyszer elolvastak, tehát pont az ellenkezőjét eredményezné.
+
+- Label: lblLegtobbet, 14, kicsit félkövér, Legtöbbet olvasott könyvek:
+- Listbox: lbLegtobbet
+
+lbLegtobbet.Items.Clear();
+using (var connection = new Database().GetConnection())
+{
+    	connection.Open();
+    	string query = "SELECT k.KonyvSzerzo, k.KonyvCim, COUNT(e.DiakAzon) AS OlvasokSzama FROM konyvek k JOIN elolvasta e ON k.KonyvAzon = e.KonyvAzon GROUP BY k.KonyvAzon HAVING COUNT(e.DiakAzon) = (SELECT MAX(OlvasokSzama) FROM (SELECT COUNT(DiakAzon) AS OlvasokSzama FROM elolvasta GROUP BY KonyvAzon ) AS subquery);";
+    	MySqlCommand command = new MySqlCommand(query, connection);
+    	MySqlDataReader reader = command.ExecuteReader();
+    	while (reader.Read())
+    	{
+        	lbLegtobbet.Items.Add(reader.GetString(0) + " - " + reader.GetString(1));
+    	}
+}
+
+- Label: lblLegtobbetDiak, 14, kicsit félkövér, Legtöbbet olvasó 3 diák:
+- Listbox: lbLegtobbetDiak
+
+lbLegtobbetDiak.Items.Clear();
+using (var connection = new Database().GetConnection())
+{
+    	connection.Open();
+    	string query = "SELECT d.DiakNev, COUNT(e.KonyvAzon) AS OlvasottKonyvek FROM diak d JOIN elolvasta e ON d.DiakAzon = e.DiakAzon GROUP BY d.DiakAzon ORDER BY COUNT(e.KonyvAzon) DESC LIMIT 3;";
+    	MySqlCommand command = new MySqlCommand(query, connection);
+    	MySqlDataReader reader = command.ExecuteReader();
+    	while (reader.Read())
+    	{
+        	lbLegtobbetDiak.Items.Add(reader.GetString(0));
+    	}
+}
+
+- Label: lblLeggyorsabban, 14, kicsit félkövér, Leggyorsabban olvasható könyvek:
+- Listbox: lbLeggyorsabban
+
+lbLeggyorsabban.Items.Clear();
+using (var connection = new Database().GetConnection())
+{
+    	connection.Open();
+    	string query = "SELECT k.KonyvSzerzo, k.KonyvCim, MIN(DATEDIFF(e.OlvasasVege, e.OlvasasKezdete)) AS LegrovidebbOlvasasiIdo FROM konyvek k JOIN elolvasta e ON k.KonyvAzon = e.KonyvAzon GROUP BY k.KonyvAzon HAVING LegrovidebbOlvasasiIdo = (SELECT MIN(DATEDIFF(OlvasasVege, OlvasasKezdete)) FROM elolvasta);";
+    	MySqlCommand command = new MySqlCommand(query, connection);
+    	MySqlDataReader reader = command.ExecuteReader();
+    	while (reader.Read())
+    	{
+        	lbLeggyorsabban.Items.Add(reader.GetString(0) + " - " + reader.GetString(1));
+    	}
+}
+
+Kilépés:
+
+private void kilépésToolStripMenuItem_Click(object sender, EventArgs e)
+{
+    Application.Exit();
+}

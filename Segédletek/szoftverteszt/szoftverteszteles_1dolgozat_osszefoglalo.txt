@@ -1,0 +1,219 @@
+
+szoftvertesztelés:
+- szoftver hibáinak észlelése, feltárása, megtalálása (hibajavítás elősegítése)
+- minőségének ellenőrzése (megfelel-e a követelményeknek, megrendelő elvárásainak, jogi szabványoknak)
+- meghibásodási kockázatának csökkentése (potenciális problémák megelőzése)
+- információ nyújtása a szoftverről: 
+   - melyek a problémás területek, és mi az, ami jól működik 
+   - biztonságosan előrébb léphet-e a projekt a következő szakaszba
+   - mikorra várható, hogy a termék kiadható
+
+tesztelés és hibakeresés összehasonlítása:
+- a tesztelés hibákat talál és tár fel, tesztelői feladat
+- a hibakeresés a feltárt hibák okait keresi, elemzi és szünteti meg, fejlesztői feladat
+
+tesztelés alapvető csoportosítása:
+- statikus tesztelés: a szoftver futása nélkül, közvetlenül a kódban keresi a hibákat   
+- dinamikus tesztelés: a szoftver futása során keresi a hibákat, két csoportja a funkionális és nem funkcionális tesztelés
+
+dinamikus tesztelés két csoportja:
+- funkionális tesztelés: a rendszer működését vizsgáljuk, abból a szempontból, hogy elvégzi-e a meghatározott funkcióit, a meghatározott funkciók azt fejezik ki, hogy „mit” kell tudnia a rendszernek elvégeznie, pl.: unit vagy egység teszt, modul vagy komponens teszt, integrációs teszt, rendszerteszt, 
+átvételi vagy elfogadási teszt
+- nem funkcionális tesztelés: olyan tulajdonságokat ellenőriz, amelyek nem a rendszer funkcionális jellemzői, hanem azt vizsgálja, hogy „miként" viselkedik a rendszer, pl.: terheléses tesztelés, használhatósági tesztelés, kompatibilitási tesztelés, akadálymentességi tesztelés, biztonsági tesztelés
+
+hibakeresés lépései:
+1. meghibásodás reprodukálása
+2. diagnózis = kiváltó ok megtalálása
+3. ok kijavítása
+4. ellenőrző tesztelés (megszűnt a hiba? már nem reprodukálható?)
+
+hibák csoportosítása eredetük szerint:
+emberi hiba -> hiba -> meghibásodás
+
+emberi eredetű hibák:
+- angolul: error, mistake
+- eredete: 
+   - szoros határidők
+   - tapasztalatlan vagy nem megfelelően képzett résztvevők
+   - nem megfelelő kommunikáció, félreértések
+   - kód, tervek, architektúra komplexitása
+   - új, ismeretlen technológia
+   - kimerültség, túlhajtottság
+   - emberi tökéletlenség
+
+hibák:
+- angolul: bug, defect, fault
+- eredete:
+   - dokumentációban (követelményspecifikációban vagy tesztszkriptben)
+   - forráskódban (vagy akár a buildben is)
+- minél előbb észre kell venni őket, mielőtt meghibásodáshoz vezethetnének
+- nem mindig okoznak meghibásodást, lehet csak bizonyos körülmények között vagy pedig soha nem kerülnek elő
+
+meghibásodás:
+- angolul: failure
+- eredete:
+   - nem csak hibák idézhetik elő,
+   - hanem pl.: hőmérséklet, szennyeződés, áramhiány, sugárzás, mágnesesség, elektromos mező, stb.
+
+kiváltó okok vizsgálata:
+- meghibásodás azonosításakor megállapítani, hogy milyen hiba vagy más tényező idézte elő
+- kiváltó ok megállapításával a jövőbeli hibák megelőzhetőek vagy gyakoriságuk csökkenthető
+- eredendő ok: legkorábbi körülmények vagy tevékenységek, amik hozzájárultak a hibához (root cause) 
+
+tesztelési alapelvek:
+1. A tesztelés a hibák jelenlétét mutatja, nem a hiányukat
+- kimutatja a hibák meglétét, de nem képes igazolni, hogy nincsenek hibák
+- csak csökkenteni az esélyét, hogy felfedezetlen hibák maradnak
+2. Nem lehetséges kimerítő teszt
+- mindenre kiterjedő tesztelés nem lehetséges (a triviális eseteket leszámítva)
+- minden lehetséges programút bejárás és bemenet tesztelése nem lehetséges
+- ehelyett kockázat alapú megközelítés: minél kevesebb teszttel fedjük le a szoftver minél nagyobb részét, különös tekintettel a fontos és kockázatos részekre
+3. A korai tesztelés időt és pénzt spórol
+- korán eltávolított hibák nem tudnak későbbi hibákat előidézni
+- minél előbb távolítjuk el a hibát, annál kevesebb költséggel jár
+- feature háromszög: minőség-idő-pénz
+4. Hibafürtök megjelenése
+- rendszeren belül a hibák eloszlása nem egyenletes
+- hanem általában a hibák többsége néhány modulban koncentrálódik
+- ezért a kritikus modulokra kell koncentrálni a tesztelés során
+5. A tesztek elkopnak 
+- minél többször hajtjuk végre ugyanazokat a teszteket, annál több ezekkel kapcsolatos hibát javítunk ki 
+- de annál kevesebb új hibát találunk -> új tesztek szükségesek
+6. A tesztelés függ a körülményektől
+- nincs egyetlen univerzálisan alkalmazható megközelítése
+- különböző környezetekben eltérő módon a legoptimálisabb
+- tesztelési módszereket mindig az adott projekthez kell igazítani
+- mennyi tesztelés elegendő? általános szabály nincs, függ: kockázati szint, határidő, költségek
+7. A hibamentesség téveszméje
+- nem elég, ha egy rendszer jól működik, a megrendelő igényeinek is meg kell felelnie
+- verifikáció mellett a validálást is el kell végezni 
+- a verifikáció, azaz a meghatározott követelmény alapos tesztelése és a feltárt hibák kijavítása, nem biztosítja a rendszer sikerét
+- validációra is szükség van, azaz meg kell felelnie a felhasználók igényeinek és elvárásainak, elő kell segíteni az ügyfél üzleti céljainak elérését, és erősebb a versenytársak rendszereihez képest
+
+teszttevékenységek:
+nincs egyértelmű sorrendiség, egymás utáni tevékenységek egymással párhuzamosan is zajlhatnak bizonyos esetekben
+1. teszttervezés
+2. tesztfelügyelet és -irányítás
+3. tesztelemzés
+4. tesztdizájn
+5. tesztmegvalósítás
+6. tesztvégrehajtás
+7. tesztkiértékelés
+8. tesztlezárás
+
+1. teszttervezés:
+meghatározza tesztbázist, azaz leírja a tesztprojekt céljait, erőforrásait és folyamatait
+pl.: ütemterv, költségvetés, szükséges eszközök, szerepkörök és felelősségeik, esetleges kockázatok
+a megfelelő tesztelési megközelítés meghatározása a környezeti tényezők szerint
+
+2. tesztfelügyelet és -irányítás:
+minden teszttevékenység folyamatos ellenőrzése
+aktuális és a tervezett előrehaladás összehasonlítása
+szükséges korrekciós intézkedések meghozása (pl. prioritás újrarendezése, ütemterv módosítása, erőforrások átrendezése)
+
+3. tesztelemzés:
+tesztfeltételek meghatározása, megvizsgálása és priorizálása kockázati tényezők szerint -> mit teszteljünk?
+megmondja mennyire kivitelezhető a teszttervezet és hol szükséges módosításokat hozni
+
+4. tesztdizájn = műszaki teszttervezés:
+konkrét tesztesetek, tesztadatok, szükséges tesztverek meghatározása -> hogyan teszteljünk? 
+tesztkörnyezet, infrastruktúrák, eszközök megtervezése
+automatizálás esetén scriptek megírása, szoftver beállítása
+
+5. tesztmegvalósítás:
+létrehozzuk vagy beszerezzük a szükséges tesztvereket:
+tesztkészlet összeállítása -> tesztesetek teszteljárásokba szervezése
+tesztvégrehajtási ütemterv -> teszteljárások prioritást kapnak
+kézi és automatizált tesztszkriptek megírása
+teszkörnyezet előállítása és ellenőrzése
+
+6. tesztvégrehajtás:
+tesztek futtatása a tesztvégrehajtási ütemterv szerint
+lehet manuális és/vagy automatizált:
+
+manuális tesztelés:
+emberek végzik
+felhasználói felületen teszteseteket hajtanak végre az előre megfogalmazott lépéseket közvetve
+előnyei:
+- rugalmasság, vizsgálandó tesztesetek bármikor módosíthatóak
+- tesztek karbantartása kevesebb időt igényel
+- kevesebb technikai ismeretet igényelnek
+- kiaknázható az emberi intuíció
+- rövid távon költség- és időhatékonyabb -> nem igényel drága eszközöket
+
+automata tesztelés:
+emberi beavatkozás nélkül hajtódnak végre
+írhatóak programozási nyelveken, külön scriptekben, segédprogramokban
+előnyei:
+- gyorsan, nagy mennyiségű tesztet képesek végrehajtani
+- azonnali eredmény, könnyen elvégezhető határidőn belül
+- küszöböli a folyamatokból az emberi hibafaktort
+- nem jár monotonitással az emberek számára
+- hosszú távon költség- és időhatékonyabb
+
+7. tesztkiértékelés:
+teszteredmények összehasonlítása a várt eredményekkel
+tesztnapló -> teszteredmények naplózása/dokumentálása
+hibajelentés -> incidensek/anomáliák elemzése, kiváltó okuk meghatározása és jelentése
+
+incidens/anomália:
+a rendszer nem tervezett, váratlan viselkedése, amely további vizsgálatokat igényel
+nem minden incidens jelent hibát, pl.:
+- rosszul értelmezett teszteset
+- más futtatási környezet
+- nem reprodukálható
+- nem szoftverhiba, hanem konfiguráció- vagy adathiba
+
+8. tesztlezárás:
+a mérföldkövek elérésekor hajtjuk végre
+lezáratlan hibák listázása vagy változtatáskérés felvétele
+tesztverek azonosítása, archiválása, átadása a felelős szervezet részére
+teszttevékenységek elemzése -> jövőbeli kiadásokhoz szükséges változtatások meghatározása
+összefoglaló tesztjelentés készítése
+
+tesztver (testware):
+a teszttevékenységek során keletkezett különböző kimeneti munkatermékek
+- tesztervezés: tesztterv, tesztütemterv, kockázati nyilvántartás, belépési és kilépési feltételek
+- tesztfelügyelet és -irányítás: tesztelőrehaladási jelentések, irányítási irányelvek dokumentációja, kockázati információk
+- tesztelemzés: tesztfeltételek, tesztbázis hibáira vonatkozó hibajelentések
+- tesztdizájn: tesztesetek, lefedettségi elemek, tesztadatokra vonatkozó követelmények, tesztkörnyezeti követelmények
+- tesztmegvalósítás: tesztvégrehajtási ütemterv, tesztadatok, tesztkörnyezet elemei, teszteljárások, automatizált tesztszkriptek
+- tesztkiértékelés: tesztnaplók, hibajelentések
+- tesztlezárás: összefoglaló tesztjelentés, következő projektek fejlesztéséhez megfogalmazott tevékenységek, dokumentált tanulságok és változtatáskérések
+
+tesztelési szerepkörök:
+1. tesztmenedzsment
+- teszttevékenységek vezetése
+- tesztcsoport munkájának monitorozása
+- tesztelők folyamatos informálása
+- tesztelés szinkronban tartása a fejlesztéssel 
+- első sorban foglalkozik: teszttervezés, tesztfelügyelet és -irányítás, tesztlezárás
+2. tesztelés
+- tesztek megtervezése, dokumentálása, végrehajtása és kiértékelése
+- első sorban foglalkozik: tesztelemzés, tesztdizájn, tesztmegvalósítás, tesztvégrehajtás, tesztkiértékelés
+szerepkörökhöz rendelt feladatok és személyek projektenként és szakaszonként változhatnak: pl. a tesztmenedzsment szerepkört elláthatja csoportvezető, tesztmenedzser, fejlesztési vezető, vagy akár lehet egyidőben tesztelő és tesztmenedzser is valaki, átveheti a menedzseri feladatok egy részét a tesztelői/fejlesztői csapat is vagy azokon kívüli külsős tesztmenedzser is akár
+
+teszteléshez szükséges általános készségek:
+- tesztelési ismeretek
+- alaposság, odafigyelés a részletekre
+- jó kommunikációs készség
+- csapatjátékos szemlélet
+- kritikus gondolkodás
+- technikai ismeretek
+- tevékenységi kör ismerete
+tesztelők általában a rossz hírek hozói -> nem támadóan, hanem építő módon kell kommunikálni
+
+tesztelés függetlenségi szintek:
+1. szerző
+2. csapaton belüli tesztelők
+3. szervezeten belüli, csapaton kívüli tesztelők
+4. szervezeten kívüli tesztelők
+
+tesztelés függetlensége:
+függetlenség hatékonyabbá teszi a tesztelőt a hibák megtalálásában, viszont nem helyettesítheti az ismereteket
+független tesztelők más nézőpontból más hibákat ismernek fel, hiszen más ismeretekkel rendelkeznek
+az a legjobb, ha a tesztelést több, különböző szintű függetlenséggel végezzük, például:
+- a fejlesztők komponens- és komponensintegrációs tesztelést,
+- a tesztcsapat rendszer- és rendszerintegrációs tesztelést,
+- az üzleti képviselők elfogadási tesztelést végeznek
+hátrányai: együttműködés hiánya, kommunikációs problémák, ellenséges viszony, felelősségérzet hiánya

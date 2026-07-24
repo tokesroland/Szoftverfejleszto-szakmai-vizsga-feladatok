@@ -1,0 +1,219 @@
+Könyv Klub
+----------
+
+Database osztály:
+
+private static string ConnectionString = "server=localhost;database=konyvklub;uid=root;";
+public static MySqlConnection GetConnection()
+{
+	try
+	{
+		MySqlConnection conn = new MySqlConnection(ConnectionString);
+		conn.Open();
+		return conn;
+	}
+	catch (Exception ex)
+	{
+		MessageBox.Show("Nem sikerült kapcsolódni az adatbázishoz!", "Hiba", MessageBoxButtons.OK, MessageBoxIcon.Error);
+		return null;
+	}
+}
+
+Gombok elhelyezése:
+- btnTorles, 12, Törlés
+- btnTiltas, 12, Tiltás / Tiltás visszavonása
+
+DataGridView elhelyezése:
+- dgvMembers
+
+Member osztály:
+
+public int Id {  get; }
+public string Name { get; }
+public string Gender { get; }
+public DateTime BirthDate { get; }
+public bool Banned { get; }
+public bool Paid { get; }
+
+public Member(int id, string name, string gender, DateTime birthDate, bool banned, bool paid)
+{
+	Id = id;
+	Name = name;
+	Gender = gender;
+	BirthDate = birthDate;
+	Banned = banned;
+	Paid = paid;
+}
+
+DataGridView beállítása:
+
+SetupDataGridView();
+
+private void SetupDataGridView()
+{
+	dgvMembers.Columns.Clear();
+	dgvMembers.Columns.Add("nev", "Név");
+	dgvMembers.Columns.Add("nem", "Nem");
+	dgvMembers.Columns.Add("szuletesiDatum", "Születési dátum");
+	dgvMembers.Columns.Add("kitiltva", "Kitiltva");
+	dgvMembers.Columns.Add("tagdijBefizetve", "Tagdíj befizetve");
+	dgvMembers.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+}
+
+DataGridView feltöltése:
+
+LoadMembers();
+
+private void LoadMembers()
+{
+	List<Member> members = new List<Member>();
+	using (MySqlConnection conn = Database.GetConnection())
+	{
+		if(conn == null)
+		{
+			Environment.Exit(0);
+		}
+		string query = "SELECT m.id, m.name, m.gender, m.birth_date, m.banned, p.id AS paid FROM members m LEFT JOIN payments p ON m.id = p.member_id GROUP BY m.id";
+		MySqlCommand cmd = new MySqlCommand(query, conn);
+		MySqlDataReader reader = cmd.ExecuteReader();
+		while (reader.Read())
+		{
+			//  A 'paid' státuszt úgy állítjuk be, hogy ha van 'p.id' érték, akkor true, egyébként false
+			bool paid = reader["paid"] != DBNull.Value;
+			members.Add(new Member(
+				reader.GetInt32("id"),
+				reader.GetString("name"),
+				reader.IsDBNull(reader.GetOrdinal("gender")) ? null : reader.GetString("gender"),
+				reader.GetDateTime("birth_date"),
+				reader.GetBoolean("banned"),
+				paid
+			));
+		}
+	}
+	dgvMembers.Rows.Clear();
+	foreach(var member in members)
+	{
+		dgvMembers.Rows.Add(member.Name, member.Gender, member.BirthDate, member.Banned ? "igen" : "nem", member.Paid ? "igen" : "nem");
+	}
+}
+
+Törlés funkció:
+
+private void brnTorles_Click(object sender, EventArgs e)
+{
+	if (dgvMembers.SelectedRows.Count == 0)
+	{
+		MessageBox.Show("A törléshez előbb válasszon ki egy tagot!", "Hiba", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+		return;
+	}
+	var selectedRow = dgvMembers.SelectedRows[0];
+	string memberName = selectedRow.Cells["nev"].Value.ToString();
+	DialogResult result = MessageBox.Show("Biztos szeretné törölni a kiválasztott tagot?", "Megerősítés", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+	if (result == DialogResult.Yes)
+	{
+		bool success = DeleteMember(memberName);
+		if (success)
+		{
+			MessageBox.Show("A tag sikeresen törlésre került.", "Törlés", MessageBoxButtons.OK, MessageBoxIcon.Information);
+			dgvMembers.Rows.Remove(selectedRow);
+		}
+		else
+		{
+			MessageBox.Show("Hiba történt a tag törlése során!", "Hiba", MessageBoxButtons.OK, MessageBoxIcon.Error);
+		}
+	}
+}
+
+DeleteMember metódus:
+
+private bool DeleteMember(string memberName)
+{
+	try
+	{
+		using (MySqlConnection conn = Database.GetConnection())
+		{
+			string query = "DELETE FROM members WHERE name = @name";
+			MySqlCommand cmd = new MySqlCommand(query, conn);
+			cmd.Parameters.AddWithValue("@name", memberName);
+			int rowsAffected = cmd.ExecuteNonQuery();
+			return rowsAffected > 0;
+		}
+	}
+	catch (Exception ex)
+	{
+		MessageBox.Show("Hiba a törlés során: " + ex.Message, "Hiba", MessageBoxButtons.OK, MessageBoxIcon.Error);
+		return false;
+	}
+}
+
+Tiltás funkció:
+
+private void btnTiltas_Click(object sender, EventArgs e)
+{
+	if (dgvMembers.SelectedRows.Count == 0)
+	{
+		MessageBox.Show("A tiltás módosításához előbb válasszon ki egy tagot!", "Hiba", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+		return;
+	}
+	var selectedRow = dgvMembers.SelectedRows[0];
+	string memberName = selectedRow.Cells["nev"].Value.ToString();
+	bool isBanned = false;
+	if (selectedRow.Cells["kitiltva"].Value.ToString().Equals("igen")){
+		isBanned = true;
+	}
+	DialogResult result;
+	if (isBanned)
+	{
+		result = MessageBox.Show("Biztos szeretné visszavonni a kiválasztott tag kitiltását?", "Megerősítés", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+	}
+	else
+	{
+		result = MessageBox.Show("Biztos szeretné kitiltani a kiválasztott tagot?", "Megerősítés", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+	}
+	if (result == DialogResult.Yes)
+	{
+		bool success = ToggleBanStatus(memberName, !isBanned);
+		if (success)
+		{
+			MessageBox.Show("A tag kitiltás állapota sikeresen módosítva.", "Módosítás", MessageBoxButtons.OK, MessageBoxIcon.Information);
+			if (isBanned)
+			{
+				selectedRow.Cells["kitiltva"].Value = "nem";
+			}
+			else
+			{
+				selectedRow.Cells["kitiltva"].Value = "igen";
+			}
+		}
+		else
+		{
+			MessageBox.Show("Hiba történt a tag kitiltásának módosítása során!", "Hiba", MessageBoxButtons.OK, MessageBoxIcon.Error);
+		}
+	}
+}
+
+ToogleBanStatus metódus:
+
+private bool ToggleBanStatus(string memberName, bool newStatus)
+{
+	try
+	{
+		using (MySqlConnection conn = Database.GetConnection())
+		{
+			string query = "UPDATE members SET banned = @banned WHERE name = @name";
+			MySqlCommand cmd = new MySqlCommand(query, conn);
+			cmd.Parameters.AddWithValue("@banned", newStatus ? 1 : 0);
+			cmd.Parameters.AddWithValue("@name", memberName);
+			int rowsAffected = cmd.ExecuteNonQuery();
+			return rowsAffected > 0;
+		}
+	}
+	catch (Exception ex)
+	{
+		MessageBox.Show("Hiba a kitiltás módosítása során: " + ex.Message, "Hiba", MessageBoxButtons.OK, MessageBoxIcon.Error);
+		return false;
+	}
+}
+
+Form1: Könyv Klub
+

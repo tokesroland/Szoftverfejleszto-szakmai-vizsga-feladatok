@@ -1,0 +1,360 @@
+
+Statikus tesztelés:
+- a szoftver futtatása nélkül, közvetlenül a kódban és a dokumentumokban keresi a hibákat
+- költséghatékonyabb, mivel nem igényel futtatást
+- szintaktikai, tervezési, logikai, karbantarthatósági, dokumentációs és specifikációbeli hibákat, szabványoktól való eltéréseket tud észlelni
+- fejlesztés korai szakaszában már elkezdhető (futtatható program létrejötte előtt), így a dinamikus tesztelés a valóban fontos hibákra koncentrálhat
+
+Dinamikus tesztelés:
+- a szoftver futtatása során keresi a viselkedésbeli hibákat
+- költségesebb, mivel futtatást és futtatható szoftvert igényel
+- futásidejű hibákat, teljesítményproblémákat, helytelen üzleti logikát, felhasználói élmény problémákat, hozzáférési és biztonsági hibákat tud észlelni
+- a szoftver tényleges működését vizsgálja, tehát mindent, ami futtatás nélkül, statikusan nem ellenőrizhető
+
+Statikus teszteléssel vizsgálható munkatermékek:
+- forráskód
+- követelményspecikáció
+- rendszertervek
+- tesztesetek
+- tesztforgatókönyvek
+- munkatervek és szerződések
+- felhasználói kézikönyvek
+- bemeneti adatok
+- bármilyen más írott anyag a szoftverrel kapcsolatban
+
+Statikus tesztelés gyakorlati alapelvei:
+- kezdjük el minél hamarabb, már a fejlesztés korai szakaszában -> csökkenti a későbbi javítások költségeit és időigényét (korai tesztelés alapelve)
+- követelmények előzetes alapos tisztázása és értelmezése, mielőtt a kódban keresnénk a hibát -> tesztelés során már egyértelműek legyenek az eltérések az elvárás és a megvalósítás között
+- érdekelt felek széles körének bevonása már a kezdetektől -> segíti a gördülékeny kommunikáció kialakulását a projekt korai szakaszában
+- teszteljelentések írása és hibák alapos dokumentációja -> újra felidézhető és nyomonkövethető legyen miket kell még javítani a fejlesztők és tesztelők számára
+- rendszeresen elegendő időt kell szánni a kódfelülvizsgálatra (code reviewra) -> kapkodva értelmét veszti és csak elpazarolt idő
+- automata kódelemző eszközök használata (pl. SonarQube, ESLint, Pylint)
+- szabványok és kódolási irányelvek követése -> egységes, olvasható kód a fejlesztő csapat számára
+
+Statikus tesztelési technikák:
+I. Felülvizsgálat (Review):
+- manuális ellenőrző folyamat
+- emberek vizsgálják a munkatermékeket közös együttműködéssel
+- elsősorban logikai, üzleti és funkcionális hibákat keresnek
+- célja lehet: defektusok felfedezése, munkatermék megértése, vita generálása, konszenzusos döntés meghozása
+II. Statikus elemzés (Static Analysis):
+- automatikus ellenőrző folyamat
+- kódelemző eszközök vizsgálják a kódállományt
+- elsősorban szintaktikai, struktúrális és biztonsági hibákat keresnek
+- célja lehet: redundáns vagy felesleges kódrészek eltávolítása, potenciális biztonsági rések megtalálása, kódszervezés, -formázás és -stílus javítása és egységesítése
+III. Formális módszerek (Formal Methods):
+- szigorú és precíz ellenőrző folyamat
+- matematikai bizonyításokkal garantálja a szoftver helyességét és megbízhatóságát 
+- ez sok területen nem jellemző, elsősorban csak kritikus rendszereknél használják (pl. repülőgépek, nukleáris reaktorok, orvosi berendezések, banki szoftverek)
+
+I. Felülvizsgálat (Review):
+
+Felülvizsgálat folyamata:
+
+1. Tervezés:
+- hatókör (scope) meghatározása -> mely munkatermékeket kell felülvizsgálni, és milyen típusú felülvizsgálatot alkalmazzunk
+- ráfordítás és időkeret becslése -> mennyi erőforrásra lesz szükség
+- megfelelő emberek kiválasztása -> vezető meghatározása elsősorban
+- felülvizsgálat jellemzőinek meghatározása -> szerepek kiosztása,
+tevékenységek, ellenőrzőlisták stb.
+- be- és kilépési feltétel meghatározása -> milyen feltételek teljesülése esetén lehet elindítani a felülvizsgálatot (belépési), illetve mikor tekinthető lezártnak a felülvizsgálat (kilépési)
+- belépési feltétel ellenőrzése -> készen áll-e minden az indításra, vagy szükség van-e további előkészületekre még
+
+2. Indítás:
+- anyagok kiosztása -> résztvevők megkapják a felülvizsgálathoz szükséges munkatermékeket, segédleteket, ellenőrzőlistákat, szabványokat stb.
+- folyamat ismertetése -> hatókör, célok, menetrend, szerepek, munkatermékek
+- felmerülő kérdések megválaszolása -> félreértések tisztázása a felülvizsgálat megkezdése előtt
+
+3. Egyéni vizsgálat:
+- kiosztott anyag önálló felülvizsgálata a megadott paraméterek alapján
+- jegyzetek készítése -> lehetséges hibák, javaslatok, kérdések összeírása
+
+4. Kérdések és elemzés:
+- a csapat közösen kiértékeli az egyéni vizsgálatok eredményeit
+- lehetséges hibák ismertetése és elemzése -> észlelt problémák megosztása és rangsorolása
+- a hibák feldolgozása többfajta módszerrel történhet, pl. defektusok egyszerű felsorolása (csak listázzák a hibákat), defektusok megvitatása (mélyebb elemzés történik), javítási javaslatok hozzáadása (konkrét javaslatokat adnak a hibák orvoslására) -> a módszert indításkor kell eldönteni -> több tényezőtől függ, pl. rendelkezésre álló idő, szerzők elérhetősége, felülvizsgálat típusa
+- minőség értékelése -> hol tart a projekt jelenleg
+- felülvizsgálat eredményének értékelése -> milyen további lépések szükségesek
+
+5. Javítás és jelentés:
+- hibajelentések létrehozása -> hibák formális dokumentálásra kerülnek
+- hibák kommunikációja a szerzők és fejlesztők felé
+- hibák javítása -> frissített státuszt mindig jelezni kell
+- metrikák gyűjtése a termékről és a folyamatról -> pl. talált hibák száma, hibák típusa, átlagos javítási idő
+- kilépési feltétel ellenőrzése -> készen áll-e minden a lezárásra, vagy szükség van-e további javításokra még
+- elfogadás -> végső döntés arról, hogy a felülvizsgálat lezárható-e
+
+Felülvizsgálati szerepek:
+
+1. Szerző:
+- a felülvizsgálat tárgyát képző dokumentum(ok) szerzője, felelőse (pl. követelményspecifikáció, tesztterv, forráskód stb.)
+- nem ő végzi a felülvizsgálatot, hanem a többiek észrevételeit és javaslatait elemzi
+- felelős a felülvizsgálat során azonosított hibák javításáért.
+- pl. programkód vizsgálatakor a szerző az a fejlesztő, aki azt a kódot írta
+
+2. Menedzsment: 
+- dönt a felülvizsgálatok végrehajtásáról és azok szükségességéről
+- projekt ütemezéshez igazítja a felülvizsgálatokat, hogy azok ne akadályozzák a fejlesztést
+- megvizsgálja, hogy a felülvizsgálat elérte-e a kitűzött célokat
+- pl. egy adott kódmódosítás előtt a projektmenedzser eldöntheti, hogy kötelező egy felülvizsgálati folyamat
+
+3. Témavezető (Moderátor):
+- felülvizsgálati megbeszélés levezetése
+- különböző nézőpontok közötti közvetítő szerep -> felelős azért, hogy minden résztvevő véleményt nyilváníthasson
+- a felülvizsgálat sikere nagyrészt rajta múlik, mivel a gördülékeny kommunikációval biztosítja, hogy a folyamat szervezett és hatékony legyen
+- pl. ha egy tesztelő és egy fejlesztő nem értenek egyet egy hibáról, a moderátor segít konszenzusra jutni
+
+4. Felülvizsgálat vezető:
+- övé az általános felelősség az egész felülvizsgálati folyamatért
+- a résztvevőkről, időzítésről és helyről ő dönt
+- biztosítja, hogy a felülvizsgálat megfelelő előfeltételekkel induljon el, például a szükséges dokumentumok rendelkezésre álljanak
+- pl. egy vezető tesztmérnök eldöntheti, hogy egy új funkció kódját egy adott időpontban a megfelelő szakértőkkel kell átnézni
+
+5. Írnok (Jegyzőkönyvvezető):
+- minden észrevételt, problémát és nyitott kérdést lejegyzetel és rögzít a felülvizsgálat során
+- segít dokumentálni a felmerült döntéseket és javaslatokat
+- az ő jegyzetei alapján készülhet hibajelentés vagy további fejlesztési javaslat
+- pl. ha egy kódfelülvizsgálaton egy fejlesztő észrevesz egy biztonsági problémát, az írnok rögzíti ezt a jelentésben, hogy később a szerző kijavíthassa
+
+6. Felülvizsgáló:
+- felülvizsgálat tényleges végrehajtói, akik megfelelő technikai és/vagy üzleti tudással rendelkeznek
+- beazonosítják és leírják az észrevételeket -> hibák, problémák, javaslatok
+- úgy kell megválasztani, hogy különböző nézőpontokat tudjanak képviselni (felhasználói, karbantartói, tesztelői, üzemeltetői)
+- pl. tesztelő ellenőrzi a követelményeket, rendszergazda ellenőrzi a konfigurációt az üzemeltetéshez, fejlesztő ellenőrzi a kód szabványoknak való megfelelését stb.
+
+Felülvizsgálat formalitása:
+- a felülvizsgálat sokféle lehet az alapján, hogy mennyire formálisan végezzük -> függ a fejlesztés előrehaladottságától, törvényi és szabályozási követelményektől, auditálás szükségességétől
+- felülvizsgálattípusok formalitás szerint növekvő sorrendben: 
+1. Informális vizsgálat
+2. Átvizsgálás (Walkthrough)
+3. Technikai felülvizsgálat
+4. Inspekció (Inspection)
+
+Felülvizsgálatok típusai formalitás szerint:
+
+1. Informális vizsgálat:
+- célja a defektusok megtalálása és információcsere
+- nem követ szigorú szabályokat
+- nincs formális eljárás
+- nincsenek meghatározott folyamatok
+- nem szükséges a dokumentáció
+- nincsenek követelmények a vizsgáló személyére és ismereteire nézve
+- hatékonysága változó -> nincs egységes módszertan, így az eredmény is eltérő lehet
+- olcsó és gyors módja kis haszon megszerzésének
+- gyakran alkalmazzák páros programozás vagy spontán megbeszélések formájában
+
+2. Átvizsgálás (Walkthrough):
+- fő célja a defektusok megértése, jelenlegi megoldások bemutatása, megfelelőségének kiértékelése, alternatívák átbeszélése
+- cél lehet még: résztvevők oktatása, véleménycsere, egyetértés kialakítása a problémák kapcsán
+- a megbeszélést a szerző vezeti
+- írnok kötelező -> általában a szerző maga az írnok
+- egyéni felkészülés és ellenőrzőlisták használata csak opcionális
+- formalitás mértéke a szervezőktől függ (lehet formálisabb és informálisabb is)
+- gyakran alkalmazzák nem éles környezetben történő szimulációk és forgatókönyvalapú elemzések formájában
+
+3. Technikai felülvizsgálat:
+- célja a műszaki hibák kimutatása, minőségellenőrzés, szabványoknak és előírásoknak való megfelelés, új megoldási ötletek és alternatívák, szerző motiválása
+- felülvizsgálóknak szakértőknek kell lenniük a megfelelő területeken (pl. fejlesztő, tesztelő, mérnök stb.)
+- írnok kötelező -> lehetőleg ne a szerző legyen!
+- egyéni felkészülés szükséges
+- megbeszélés, ellenőrzőlisták használata csak opcionális
+
+4. Inspekció (Inspection):
+- célja a szerződés-, szabvány- és törvénybeli követelményeknek való megfelelés szigorú vizsgálata, minőségellenőrzés, defektusok szisztematikus azonosítása, kritikus hibák megelőzése, bizalom megalapozása
+- képzett moderátor vezeti -> külső, független személy, nem lehet a szerző!
+- írnok kötelező
+- jól definiált szerepek, ellenőrzőlisták, be- és kilépési feltételek
+- egyéni felkészülés létfontosságú
+- jelentés készül a problémák részletes listájával
+- hibák dokumentálása és statisztikai elemzése
+- folyamatok javításához metrikák gyűjtése
+
+Felülvizsgálati technikák:
+1. Ad hoc vizsgálat (Ad hoc Review)
+2. Ellenőrzőlista alapú vizsgálat (Checklist-Based Review)
+3. Forgatókönyv-alapú vizsgálat (Scenario-Based Review)
+4. Szerep alapú vizsgálat (Role-Based Review)
+5. Perspektíva alapú vizsgálat (Perspective-Based Review)
+
+1. Ad hoc vizsgálat (Ad hoc Review)
+- rögtönzött, strukturálatlan felülvizsgálati módszer, amely kevés előkészítést igényel
+- nem követ formális eljárást vagy előre meghatározott lépéseket, általában egyetlen végigolvasás történik
+- résztvevők előzetes tervezés nélkül, saját tapasztalatuk és intuíciójuk alapján végzik el a felülvizsgálatot
+- gyors és egyszerű módszer, de nem biztosít teljes körű lefedettséget
+- jól alkalmazható kisebb dokumentumok, kódrészletek gyors ellenőrzésére
+- nagyban függ a vizsgálók szakértelmétől és figyelmétől
+
+2. Ellenőrzőlista alapú vizsgálat (Checklist-Based Review)
+- előre összeállított kérdéssoron vagy ellenőrzőlistán alapul
+- a felülvizsgálók a listán szereplő pontokat végigvizsgálják a munkatermékeken
+- a lista általában projektkövetelmények, fejlesztési irányelvek vagy iparági szabványok alapján készül
+- alapos, jól struktúrált, ismételhető módszer
+- segít biztosítani, hogy a követelményeknek és szabványoknak eleget tegyünk
+- jó alapot biztosít kezdő felülvizsgálók számára is
+- nagyban függ a kérdéssor vagy ellenőrzőlista alaposságától -> nem fedez fel olyan hibákat, amelyek nem szerepelnek
+
+3. Forgatókönyv-alapú vizsgálat (Scenario-Based Review)
+- a felülvizsgálat konkrét felhasználási esetek (forgatókönyvek) mentén történik
+- ellenőrzi, hogy a munkatermék megfelel-e az elvárt működésnek adott szituációkban
+- a forgatókönyvekhez valós életből vett helyzeteket vesznek alapul
+- általában felhasználói történeteket (user stories) vagy tesztforgatókönyveket használnak
+- gyakran alkalmazzák teszttervek és követelményspecifikációk átvizsgálására is
+- gyakorlatias megközelítés -> segít az üzleti logika és a felhasználói élmény ellenőrzésében
+- nehéz és időigényes lehet minden lehetséges felhasználási eset lefedése és végigvizsgálása
+
+4. Szerep alapú vizsgálat (Role-Based Review)
+- a felülvizsgálatot különböző szakmai szerepkörök szemszögéből végzik
+- biztosítja, hogy az adott munkatermék minden szakterület szempontjából megfelelő legyen
+- szakmai szerepkör lehet pl.: user admin (jogosultságok), rendszer admin (infrastruktúra és admin felület), performancia tesztelő, biztonsági szakértő, üzleti elemző, szoftver architekt, dokumentációs szakértő, megfelelőségi biztos stb.
+- segít összehangolt megoldást találni a különböző igényekből fakadó problémákra
+- erőforrásigényes minden szakterületről bevonni embereket és a közöttük lévő gördülékeny kommunikációt biztosítani
+
+5. Perspektíva alapú vizsgálat (Perspective-Based Review)
+- hasonlít a szerep alapúhoz, csak a felülvizsgálók szakértelmüktől független más nézőpontokból, azaz perspektívákból elemzik a munkatermékeket -> végfelhasználó (felhasználói élmény), marketinges (piaci igények és a versenyképesség), tervező (felhasználói felület és design), tesztelő (megfelelő funkcionalitás és hibamentesség) 
+- felülvizsgálóknak a megadott perspektíva szerint kell használni és vizsgálni a terméket
+- perspektíva specifikus ellenőrzőlisták használata elvárt
+
+II. Statikus elemzés (Static Analysis):
+- szinte mindig forráskódból dolgozik 
+- statikus elemzőeszközök végzik fordítás előtt
+- tipikusan programozók használják 
+- elsősorban kritikus rendszereknél, biztonsági teszteléseknél és CI/CD rendszerek minőségbiztosításánál használják
+- egységtesztelés részeként is szokták használni gitre való felküldés előtt 
+- automatikus ellenőrző folyamat, amit manuális vizsgálat követ
+- nem elégséges önállóan, hanem mindig kombinálni kell egy alapos emberi átnézéssel is -> nagy mennyiségű figyelmeztetést generálhat, amit megfelelően kell tudni kezelni (nem feltétlenül hibák, pl. hamis pozitívumok és negatívumok)
+
+Statikus kódelemző eszközök:
+- SonarQube (minden nyelvre a legnépszerűbb), ESLint (JavaScript/TypeScript), Pylint (Python), Roslyn (C#/Visual Basic)
+- automatikusan átvizsgálják a kódot, és jelentéseket generálnak a talált problémákról
+- integrálhatók CI/CD folyamatokba (pl. GitHub Actions, Jenkins), hogy minden kódbeküldés automatikusan ellenőrizve legyen
+
+Hibák fajtái statikus elemzés során:
+1. Kódminőségi hibák (Code Quality Issues):
+- nem használt változók vagy függvények
+- elérhetetlen (halott) kód
+- túl hosszú metódusok vagy osztályok
+- túlbonyolított algoritmusok
+- nehezen értelmezhető kódrészletek
+2. Biztonsági hibák (Security Issues):
+- SQL Injection veszélyek
+- XSS (Cross-Site Scripting) sérülékenységek
+- nem megfelelő bemenetellenőrzés
+- titkosítási vagy hitelesítési problémák
+- rossz jogosultságkezelés
+3. Működési és logikai problémák (Bugs and Logical Issues):
+- null pointer dereferálás (nullal való művelet)
+- túlcsordulás (pl. integer overflow)
+- végtelen ciklusok
+- hibás elágazások vagy feltételek
+- nem inicializált változók használata
+4. Teljesítménybeli problémák (Performance Issues)
+- túlzott memóriahasználat (pl. nagy adatszerkezetek helytelen kezelése)
+- alacsony hatékonyságú algoritmusok vagy ciklusok
+- felesleges adatmásolatok készítése
+- nem használt vagy túl gyakran meghívott függvények
+5. Tervezési vagy architektúra hibák (Design or Architectural Issues)
+- kódduplikációk
+- rossz moduláris felépítés (pl. egy osztály túl sok felelősséggel)
+- modulok közötti kapcsolatok hibá
+- alacsony kohézió vagy túl magas összefonódás
+- rosszul megtervezett API-k (pl. elavultak vagy hibásan használják az interfészeket)
+6. Stílusbeli hibák (Stylistic Issues)
+- helytelen változónevek
+- túl sok vagy túl kevés szóköz
+- következetlen indentálás
+- helytelen zárójelezés
+- nem megfelelő kommentelés
+7. Kompatibilitási és portabilitási problémák (Compatibility and Portability Issues)
+- hardver- vagy szoftverfüggőségek
+- nem platformfüggetlen kód (pl. csak Windowsra írt kód)
+- használható verzióval kapcsolatos problémák (pl. régi könyvtárak használata)
+
+Hibák elemzése SonarQube-ban:
+- issuek: hibák, amiket a SonarQube észlelt az elemzés során
+- issue típusai: bug, vulnerability, code smell
+- bug: futáskor rossz működéshez vezet (pl. null referencia, osztás nullával)
+- vulnerability: biztonsági kockázatot okoz (pl. SQL injection, nyílt jelszó tárolása forráskódban)
+- code smell: minden más, ami karbantarthatósági problémát szül (pl. használatlan változók, túl hosszú függvények)
+- issue súlyossága (severity): blocker, critical, major, minor, info (új verzióban: high, medium, low)
+- blocker: összeomlást eredményez, azonnali javítást igényel (pl. nem lekezelt null referencia)
+- critical: súlyos hibát eredményez, sürgős javítást igényel (pl. SQL injection lehetőség)
+- major: nem azonnali hibát eredményez, de karbantarthatóság érdekében minél előbb javítandó (pl. túl hosszú metódus)
+- minor: működést nem közvetlenül befolyásolja, de minőség növelése érdekében javítható (pl. használatlan változók)
+- info: nem hiba, csak minőségjavítási javaslat vagy figyelmeztetés (pl. nincs dokumentáció egy függvényhez)
+- issue további jellemzői: helye (fájlnév, osztálynév, hanyadik sor), becsült javítási ideje, javításáért felelős személy, milyen szabályt sértett meg
+- szabályok (rules): kódelemzési kritériumok, amelyeknek ha nem tesznek eleget a forráskód bizonyos részei, akkor azok problémásnak lesznek minősítve -> ezek határozzák meg az issuekat a kódban
+- szabályok típusai: bug rules (pl. "Null pointers should not be dereferenced"), vulnerability rules (pl. "Secure password should be used when connecting to a database"), code smell rules (pl. "Methods should not have too many parameters"), security hotspot (pl. "Using hardcoded IP addresses is security-sensitive") -> potenciális biztonsági gyengepont, meg kell vizsgálni, hogy valódi-e
+- minőségi profil (quality profile): kiválasztott szabályok listája, amiket figyelembe szeretnénk venni -> akár saját szabályokat is létrehozhatunk és hozzáadhatunk a saját profilunkhoz
+- technikai adósság (technical debt): az a többletmunka, amely abból adódik, hogy a kód nem megfelelő minőségben lett megírva vagy gyors megoldások születtek, amelyeket később javítani kell -> mennyi idő szükséges ezek kijavításához (kijavítás becsült ideje / fejlesztési időszak hossza * 100)
+- tesztlefedettség (coverage): a forráskód hány százalékára futott le valamilyen automatikus teszt (lefedett utasítások száma / összes utasítások száma * 100) -> három szempontból vizsgál: line, branch, condition 
+- kódduplikációk (duplications): azonos vagy nagyon hasonló kódrészletek ismétlődése legalább 3-szor (duplikált kódsorok száma / összes kódsor száma * 100)
+- minőségi kapu (quality gate): kritériumok listája, amik közül ha már csak egynek nem felel meg a kód, akkor a kapu megbukik, és a kód kiadása előtt figyelmeztet vagy meggátolja a kiadást (pl. nincs blocker vagy critical hiba, nincs vulnerability, technical debt < 5%, coverage > 80%)
+- issue állapotok (status): megállapítja, hogy a talált problémákkal mi a teendő -> open (nincs megoldva), resolved (megoldott), false positive (helytelenül hibának jelölt), won't fix (nem szükséges javítani)
+- javítási javaslatok: a SonarQube javaslatokat ad példakóddal és magyarázattal az egyes issuek javítására
+
+Hamis pozitívok és negatívok:
+- statikus elemző eszközök sem tökéletesek! -> előfordulhat, hogy nem talál meg bizonyos hibákat, vagy valamit helytelenül hibának észlel, ezért a talált hibákat négy csoportba soroljuk:
+1. Valós pozitív: helyesen hibát jelez, ahol van hiba -> sikeresen megtalált hiba
+2. Valós negatív: helyesen nem jelez hibát, ahol nincs hiba -> hibamentesség megerősítése
+3. Hamis pozitív: helytelenül hibát jelez, ahol nincs hiba -> félrevezet a hamis hiba
+4. Hamis negatív: helytelenül nem jelez hibát, ahol van hiba -> megtalálatlanul maradt hiba
+- az issuekat mindig manuálisan felülvizsgálni és állapotukat eszerint frissíteni kell!
+- megtalálatlan hibák esetén érdemes új saját szabályt felvenni a profilunkba
+
+Rossz jelek/kódminták (Code smells) és fejlesztési ellenminták (Anti-patterns):
+- statikus elemző eszközök által észlelt minták, amik közvetlen hibát nem okoznak, de hosszú távon problémákat idéznek elő, pl. nehéz bővíthetőség, karbantarthatóság, tesztelhetőség vagy teljesítménybeli problémák
+- a rossz kódminták olyan gyanús jelek a kódban, amelyek arra utalnak, hogy a kód nem optimálisan van megírva, így nagy eséllyel később problémássá válnak, ha így maradnak
+- a fejlesztési ellenminták olyan hibás bevett gyakorlatok, szokások és tervezési megoldások, amik használata idővel negatív következményekkel fog járni
+
+Rossz jelek/kódminták (Code Smells):
+1. Duplicated Code (Kódduplikáció):
+- ugyanaz a kódrészlet többször előfordul a projektben, így bármilyen változtatást minden előfordulásban el kell végezni
+- megoldásként ki kell szervezni az ismétlődéseket egy helyre
+2. Long Method (Túl hosszú metódusok):
+- egy függvény túl hosszú vagy túl sok mindent csinál, így rugalmatlan, nehezen olvasható és értelmezhető
+- megoldásként több függvényre kell felosztani az elvégzendő feladatot
+3. Large Class (Túl nagy osztály):
+- az osztály túl sok felelősséggel rendelkezik, azaz annyi feladatot lát el, amit már észszerű lenne több osztálynak részfeladatokra osztani, mert egyébként nehezen átláthatóvá és bővíthetővé válik
+- megoldásként minden osztály csak egy jól definiált funkcióhoz tartozó mezőket és metódusokat foglalja magában
+4. Feature Envy (Funkció irigység):
+- egy osztály metódusa túlzottan egy másik osztály adataira vagy funkcióira koncentrál, és nem a sajátjaival dolgozik elsősorban, így olyan funkciókat lát el, amiket észszerűen másik osztályban keresnénk
+- megoldásként minden függvényt a lehető legáltalánosabb helyen írjunk meg, ahol minden függősége a birtokunkban van
+5. Long Parameter List (Hosszú paraméterlista)
+- egy függvény minél több paramétert fogad, annál körülményesebb használni és átlátni, hogy mikor mire van szüksége és hogyan működik
+- megoldásként ki kell emelni a paraméterek egy részét egy objektumba vagy kevesebb feladatot kell rábízni a függvényre, hogy ne legyen szüksége ennyi paraméterre
+6. Lazy Class (Lusta osztály)
+- egy osztály túl keveset csinál, rövid és alig van függvénye, tehát a benne lévő logika nem indokolja az osztály létezését
+- megoldásként összevonásra van szükség, mert túl sok osztályra lett felbontva egy feladat
+7. Middle Man (Közvetítő)
+- egy osztály nem végez érdemi munkát, hanem csak más osztályok között közvetít, átirányítja a hívásokat, ezzel növelve a rendszer bonyolultságát anélkül, hogy valódi funkcionalitást adna hozzá
+- megoldásként meg kell szüntetni a közvetítő osztályt vagy tényleges saját funkciókkal ellátni a közvetítő szerepe mellett
+8. Data Class (Adat osztály)
+- olyan osztály, amely csak adatokat tárol, és nem rendelkezik valódi üzleti logikával vagy viselkedéssel, csak getter és setter függvényei vannak, és emellett nincsen semmilyen más funkciója
+- megoldásként össze kell vonni az osztállyal, ami használja vagy tényleges saját funkciókkal ellátni
+9. Magic Numbers (Mágikus számok):
+- beégetett számértékek a kódban, amelyek sok esetben dokumentálva sincsenek, így nem lehet tudni, hogy mi a jelentése vagy miért ez az érték van odaírva 
+- megoldásként helyettesítsük konstansokkal, amelyek neve beszédes, szükség esetén hosszabb, és legyen dokumentálva, hogy egyértelművé váljon mi a szerepe a kódban
+10. Comment Problems (Komment problémák)
+- a túlzott kommenthasználat nehezen átláthatóvá és félreérthetővé teszi a kódot feleslegesen, sok kommentelésre akkor van csak szükség, ha a kód nehezen értelmezhető nélküle, ilyenkor megoldásként a kódot kell szebben megírni, nem pedig kommenteléssel elfedni a tényleges problémát
+- a másik véglet a kommentelés teljes hiánya, amikor a nem triviális problémák és használat magyarázata elmarad a kódban a speciális eseteknél, így a jövőbeli fejlesztők nehezen értik meg a működését, ilyenkor megoldásként rövid, lényegretörő kommentekkel kell felhívni a figyelmet a lényegre
+
+Fejlesztési ellenminták (Anti-patterns):
+1. Spaghetti Code (Spagetti kód):
+- túlbonyolított, rendezetlen kód, ahol nincs egyértelmű elkülönülés az egyes funkciók és vezérlési szerkezetek között (pl. sok egymásba ágyazás), ezért nehezen olvasható, módosítható és karbantartható
+- megoldásként kisebb egységekre kell bontani a kódot, ahol mindegyik egység feladata és szerepe egyértelmű és jól definiált
+2. Copy-Paste Programming (Másolás-beillesztéssel programozás):
+- kód másolása és beillesztése a rendszer más részeibe anélkül, hogy egy általános, újrafelhasználható komponenst alkalmaznánk minden szükséges előfordulásnál
+- megoldásként az összes ismétlődést ki kell szervezni egy helyre, hogy központilag karbantartható legyen és elkerüljük a kódduplikációt
+3. Golden Hammer (Arany kalapács)
+- valaki túl sok problémát ugyanazzal az eszközzel próbál megoldani, mert azt a legjobb megoldásként tartja számon minden szituációra, ezáltal sok esetben nem a legopcionálisabb megoldások születnek
+- megoldásként nézzünk utána a legjobb gyakorlatoknak (best practices), tervezési mintáknak (design patterns), külső könyvtáraknak, keretrendszereknek stb., amik az adott célt a legmegfelelőbben érik el számunkra
+4. The Blob/God Class (Szörnyeteg/Isten osztály):
+- egy osztályban van központosítva szinte minden funkció, ami így túl sok felelősséggel rendelkezik, és nagy mértékben összefonódik a kód többi részével, azaz minden más kódrész függ tőle, ezáltal az osztály módosítása hatással van az egész rendszerre és teljesen átláthatatlanná válik
+- megoldásként az osztályt több osztályra kell bontani, amik egy jól definiált funkcióhoz tartozó mezőket és metódusokat foglalnak magukban, és az eredeti osztály ezeket használja fel a saját funkcionalitásán túl, ha még egyáltalán szükséges
+5. Lava Flow (Megkövesedett Kód):
+- aktív, de elavult kódmaradványok, amelyek elfelejtett korábbi tervezési döntések eredményei, nem opcionális megoldások, mégis jelen vannak a rendszerben
+- megoldásként az ilyen kódrészeket alapos átvizsgálás után döntés szerint eltávolítani, frissíteni vagy összevonni kell más friss kódrészekkel 
+6. Boat Anchor (Horgony):
+- olyan halott kódrész, amely már nincs használva, semmi szerepe nincs, így teljesen feleslegessé vált a rendszerben, de mégis meg van tartva, és nehezíti az átláthatóságot
+- megoldásként amint nem használunk egy kódrészletet egyből távolítsuk el, hiszen a verziókezelő segítségével visszatudjuk állítani, ha mégis szükség lenne rá, de ez szinte sosem fordul elő
+

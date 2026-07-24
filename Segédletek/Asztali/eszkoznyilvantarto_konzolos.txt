@@ -1,0 +1,110 @@
+Eszköznyilvántartó (grafikus)
+-----------------------------
+
+Projekt létrehozása
+
+Eszkoz osztály:
+
+class Eszkoz
+{
+	public string Nev { get; set; }
+	public string Tipus { get; set; }
+	public string Alkalmazott { get; set; }
+	public DateTime HasznalatKezdete { get; set; }
+}
+
+static void Main()
+{
+	var eszkozok = EszkozokBeolvasasa("eszkozok.txt");
+        Console.WriteLine("1. feladat:");
+        LegkorabbanNyilvantartasbaKerultEszkozok(eszkozok);
+        Console.WriteLine("2. feladat:");
+        Console.Write("Kérem adjon meg egy eszköztípust: ");
+        string eszkozTipus = Console.ReadLine();
+        EszkozTipusSzerintiKereses(eszkozok, eszkozTipus);
+        Console.WriteLine("3. feladat:");
+        AlkalmazottakEszkozeinekSzama(eszkozok);
+        Console.WriteLine("4. feladat:");
+        Console.Write("Kérem adjon meg egy márkanevet: ");
+        string marka = Console.ReadLine();
+        MarkaSzerintiKereses(eszkozok, marka);
+}
+
+static List<Eszkoz> EszkozokBeolvasasa(string fajlNev)
+{
+        var eszkozok = new List<Eszkoz>();
+        var sorok = File.ReadAllLines(fajlNev).Skip(1);
+        foreach (var sor in sorok)
+        {
+        	var oszlopok = sor.Split(';');
+        	var eszkoz = new Eszkoz
+        	{
+                	Nev = oszlopok[0],
+                	Tipus = oszlopok[1],
+                	Alkalmazott = oszlopok[2],
+                	HasznalatKezdete = DateTime.Parse(oszlopok[3])
+        	};
+        	eszkozok.Add(eszkoz);
+        }
+        return eszkozok;
+}
+
+static void LegkorabbanNyilvantartasbaKerultEszkozok(List<Eszkoz> eszkozok)
+{
+	var legkorabbiDatum = eszkozok.Min(e => e.HasznalatKezdete);
+        var legkorabbiEszkozok = eszkozok.Where(e => e.HasznalatKezdete == legkorabbiDatum).ToList();
+        Console.WriteLine("Legkorábban nyilvántartásba került eszközök:");
+        foreach (var eszkoz in legkorabbiEszkozok)
+        {
+        	Console.WriteLine(eszkoz.Nev);
+        }
+}
+
+static void EszkozTipusSzerintiKereses(List<Eszkoz> eszkozok, string tipus)
+{
+        var talalatok = eszkozok.Where(e => e.Tipus.Equals(tipus, StringComparison.OrdinalIgnoreCase)).ToList();
+        if (talalatok.Any())
+        {
+        	Console.WriteLine($"A {tipus} típusú eszközök:");
+        	foreach (var eszkoz in talalatok)
+        	{
+                	Console.WriteLine(eszkoz.Nev);
+        	}
+        }
+        else
+        {
+        	Console.WriteLine("Ebbe a típusba nem tartozik egy eszköz sem!");
+        }
+}
+
+static void AlkalmazottakEszkozeinekSzama(List<Eszkoz> eszkozok)
+{
+        var alkalmazottEszkozok = eszkozok
+        	.GroupBy(e => e.Alkalmazott)
+        	.Select(g => new { Alkalmazott = g.Key, EszkozokSzama = g.Count() })
+        	.ToList();
+        foreach (var alkalmazott in alkalmazottEszkozok)
+        {
+        	Console.WriteLine($"{alkalmazott.Alkalmazott}: {alkalmazott.EszkozokSzama} eszköz");
+        }
+}
+
+static void MarkaSzerintiKereses(List<Eszkoz> eszkozok, string marka)
+{
+        var talalatok = eszkozok
+        	.Where(e => e.Nev.IndexOf(marka, StringComparison.OrdinalIgnoreCase) >= 0)
+        	.ToList();
+	if (talalatok.Any())
+	{
+        	Console.WriteLine($"A(z) {marka} márkájú eszközök:");
+        	foreach (var eszkoz in talalatok)
+        	{
+            		Console.WriteLine(eszkoz.Nev);
+        	}
+    	}
+	else
+	{
+        	Console.WriteLine("Nincs ilyen márkájú termék!");
+	}
+}
+
