@@ -40,4 +40,4 @@ Ha anyagot szeretnél beküldeni, kérlek, kövesd az alábbi lépéseket:
 *   **Fájlnevek:** Használj egyértelmű, ékezet nélküli fájlneveket (pl. `feladat_01_megoldas.py`).
 *   **Szerzői jog:** Kérlek, csak olyan anyagokat (pl. feladatlapokat) ossz meg, amelyek publikusak vagy amelyek megosztása nem sért szerzői jogokat.
 
-Köszönöm a segítségedet, építsük együtt tovább a tudásbázist!
+Köszönöm a segítségedet, építsük együtt tovább a tudásbázist! Ha bármilyen pontatlanságot vagy hibát észlelsz, akkor jelezd nyugodtan.
